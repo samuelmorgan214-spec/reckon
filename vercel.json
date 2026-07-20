@@ -1,0 +1,6 @@
+{
+  "crons": [
+    { "path": "/api/cron/ingest-odds", "schedule": "0 20 * * *" },
+    { "path": "/api/cron/ingest-rba", "schedule": "30 22 * * *" }
+  ]
+}

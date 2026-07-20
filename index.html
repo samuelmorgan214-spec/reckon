@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reckon — what the markets say</title>
+<meta name="description" content="Reckon tracks what betting and prediction markets imply about the questions Australians argue about. Footy, politics, the economy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#071A12;
+  --surface:#0C2318;
+  --surface2:#11301F;
+  --mint:#3DFFA2;
+  --mint-dim:#1E7A50;
+  --cream:#EDF5EF;
+  --muted:#7FA08C;
+  --down:#FF7A6B;
+  --line:#1A3A28;
+  color-scheme: dark;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand-group{display:flex;align-items:baseline;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px;color:var(--mint)}
+.logo svg{display:block}
+.tagline{font-size:13px;color:var(--muted);letter-spacing:0.04em}
+.head-right{display:flex;align-items:center;gap:14px}
+.search{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:13px;padding:8px 16px;width:190px;transition:border-color .15s}
+.search:focus{outline:none;border-color:var(--mint-dim)}
+.search::placeholder{color:var(--muted)}
+.subscribe-btn{background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:8px 18px;border-radius:99px;cursor:pointer}
+.subscribe-btn:hover{opacity:.9}
+.empty{color:var(--muted);font-size:14px;padding:30px 4px;grid-column:1/-1}
+@media(max-width:720px){.tagline{display:none}.search{width:130px}}
+
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;background:var(--surface)}
+.ticker-inner{display:inline-block;padding:9px 0;animation:tick 40s linear infinite;font-family:'Space Grotesk',sans-serif;font-size:13px}
+.ticker-inner span{margin:0 26px;color:var(--muted)}
+.ticker-inner b{color:var(--cream);font-weight:500}
+.ticker-inner .up{color:var(--mint)}
+.ticker-inner .dn{color:var(--down)}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.ticker-inner{animation:none}}
+
+.hero{padding:56px 0 34px}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,5.5vw,58px);line-height:1.04;letter-spacing:-1.5px;max-width:720px}
+.hero h1 em{font-style:normal;color:var(--mint)}
+.hero p{margin-top:16px;color:var(--muted);font-size:16px;max-width:560px;line-height:1.6}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:26px 0 18px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;flex-wrap:wrap}
+.tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:14px;padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
+.tab:hover{border-color:var(--mint-dim);color:var(--cream)}
+.tab.on{background:var(--mint);border-color:var(--mint);color:var(--forest);font-weight:700}
+.tab:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.stamp{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:99px;background:var(--muted)}
+.dot.live{background:var(--mint);box-shadow:0 0 8px var(--mint)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;padding-bottom:40px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;transition:border-color .15s;display:flex;flex-direction:column;gap:14px}
+.card:hover{border-color:var(--mint-dim)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.cat{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+.move{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500}
+.move.up{color:var(--mint)}
+.move.dn{color:var(--down)}
+.move.flat{color:var(--muted)}
+.q{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-0.3px;min-height:47px}
+.price-row{display:flex;align-items:baseline;gap:8px}
+.pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;letter-spacing:-2px;color:var(--mint)}
+.pct-label{font-size:13px;color:var(--muted)}
+.track{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.fill{height:100%;background:var(--mint);border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.meta{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);line-height:1.5}
+.src{color:var(--mint-dim)}
+
+.note{border:1px dashed var(--mint-dim);border-radius:12px;padding:14px 16px;margin-bottom:26px;font-size:13px;color:var(--muted);line-height:1.6;display:none}
+.note.show{display:block}
+.note b{color:var(--cream);font-weight:500}
+
+.signup{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;margin:10px 0 60px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.signup h2{font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:-0.5px}
+.signup p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;max-width:440px}
+.signup form{display:flex;gap:10px;flex-wrap:wrap}
+.signup input{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:12px 18px;min-width:240px}
+.signup input:focus{outline:none;border-color:var(--mint-dim)}
+.signup button{background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:12px 22px;border-radius:99px;cursor:pointer}
+.signup button:hover{opacity:.9}
+.signup .msg{width:100%;font-size:13px;color:var(--mint);margin-top:4px;display:none}
+
+footer{border-top:1px solid var(--line);padding:28px 0 44px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted);line-height:1.7}
+footer .fbrand{font-family:'Space Grotesk',sans-serif;color:var(--mint);font-weight:700;font-size:15px}
+footer a{color:var(--mint-dim)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="brand-group">
+    <div class="logo">reckon</div>
+    <div class="tagline">what do you reckon?</div>
+  </div>
+  <div class="head-right">
+    <input class="search" id="searchBox" type="search" placeholder="Search markets" aria-label="Search markets">
+    <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
+  </div>
+</header>
+</div>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<div class="wrap">
+<section class="hero">
+  <h1>The polls and news say one thing.<br>The <em>markets</em> say another.</h1>
+  <p>Reckon tracks what people with skin in the game believe about the questions Australians actually argue about. Footy, politics, the economy. Not polls, not pundits. The price of being right, updated from live markets.</p>
+</section>
+
+<div class="note" id="demoNote"><b>Demo prices.</b> The live feed could not be reached, so the board is showing illustrative placeholder prices. Refresh in a minute.</div>
+
+<div class="bar">
+  <div class="tabs" role="tablist" aria-label="Market categories">
+    <button class="tab on" data-cat="all">All markets</button>
+    <button class="tab" data-cat="footy">Footy</button>
+    <button class="tab" data-cat="sports">Sports</button>
+    <button class="tab" data-cat="politics">Politics</button>
+    <button class="tab" data-cat="economy">Economy</button>
+    <button class="tab" data-cat="crypto">Crypto</button>
+  </div>
+  <span class="stamp" id="stamp"><span class="dot" id="liveDot"></span><span id="stampText">Loading prices...</span></span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<section class="signup">
+  <div>
+    <h2>The weekly reckoning</h2>
+    <p>One email a week. The biggest market moves, what the money thinks the pundits are getting wrong, and the numbers behind the arguments.</p>
+  </div>
+  <form id="signupForm">
+    <input type="email" id="email" placeholder="you@email.com" required autocomplete="email">
+    <button type="submit">Subscribe</button>
+    <div class="msg" id="signupMsg" role="status"></div>
+  </form>
+</section>
+
+<footer>
+  <div>
+    <div class="fbrand">reckon</div>
+    <div>What people with skin in the game are saying.<br>Made in Australia. <a href="/methodology.html">How our numbers work</a></div>
+  </div>
+  <div style="max-width:520px">
+    Reckon is an information and media product. Prices shown reflect external prediction markets and published odds, not markets operated by Reckon. Nothing here is financial advice or an inducement to gamble. If gambling is a problem for you or someone you know, call the National Gambling Helpline on 1800 858 858.
+  </div>
+</footer>
+</div>
+
+<script>
+// Demo fallback only renders when /api/prices is unreachable, and says so.
+// [category, question, percent chance, 7-day move in points]
+const DEMO = [
+  ["footy","Panthers to win the 2026 NRL premiership",24,3],
+  ["footy","Collingwood to win the 2026 AFL flag",17,-2],
+  ["footy","Storm to win the 2026 NRL premiership",18,1],
+  ["footy","Broncos to win the 2026 NRL premiership",11,-1],
+  ["footy","Raiders to win the 2026 NRL premiership",9,0],
+  ["footy","Brisbane Lions to win the 2026 AFL flag",15,2],
+  ["footy","Carlton to win the 2026 AFL flag",8,-3],
+  ["footy","Geelong to win the 2026 AFL flag",13,1],
+  ["footy","NSW to win State of Origin game three",46,1],
+  ["footy","Richmond to take the AFL wooden spoon",34,5],
+  ["sports","Spain to lift the World Cup",59,8],
+  ["sports","Argentina to lift the World Cup",41,-8],
+  ["sports","Sam Burns to win The Open",35,6],
+  ["sports","Aussie Lucas Herbert to win The Open",4,2],
+  ["sports","Si Woo Kim to win The Open",14,-1],
+  ["sports","Ryan Fox to win The Open",9,3],
+  ["sports","Antonelli to win the Belgian Grand Prix",63,-1],
+  ["sports","Verstappen to win the Belgian Grand Prix",20,4],
+  ["sports","Mercedes to take the F1 constructors title",84,1],
+  ["sports","Ferrari to take the F1 constructors title",14,-1],
+  ["politics","Labor to win the next federal election",57,-3],
+  ["politics","Gambling ad ban expanded before January 2027",41,5],
+  ["politics","One Nation to win a House of Reps seat at the next election",22,4],
+  ["politics","One Nation to top 10% of the primary vote at the next election",31,2],
+  ["politics","Leadership change in the opposition this year",22,4],
+  ["politics","Albanese still PM at Christmas",78,-2],
+  ["politics","A federal election called this year",8,1],
+  ["politics","Democrats to win the US House at the midterms",83,2],
+  ["politics","Democrats to win the US Senate at the midterms",44,-1],
+  ["politics","Democrats to take the White House in 2028",58,0],
+  ["economy","RBA to cut the cash rate at the next meeting",68,6],
+  ["economy","Inflation under 3% at the last print before Christmas",74,3],
+  ["economy","Brisbane home values above Melbourne at the December print",74,2],
+  ["economy","Unemployment above 4.5% at the next print",31,-1],
+  ["economy","Sydney home values up year on year at the next print",71,2],
+  ["economy","Cash rate below 3% by year end",35,4],
+  ["economy","ASX 200 to finish the year above 9,000",48,-2],
+  ["economy","Wages growth to beat inflation this year",44,3],
+  ["economy","Aussie dollar above 70 US cents at year end",27,-2],
+  ["economy","US recession called in 2026",11,-3],
+  ["crypto","Bitcoin to top US$100k this year",13,-4],
+  ["crypto","Bitcoin to top US$110k this year",10,-2],
+  ["crypto","Bitcoin to top US$150k this year",4,0],
+  ["crypto","Bitcoin to dip under US$50k this year",41,-12],
+  ["crypto","Bitcoin to dip under US$40k this year",26,3],
+  ["crypto","Ethereum to top US$3,500 this year",15,1],
+  ["crypto","Ethereum to top US$4,000 this year",10,0],
+  ["crypto","Ethereum to dip under US$1,250 this year",37,-5],
+  ["crypto","Ethereum to dip under US$1,000 this year",20,-2],
+  ["crypto","Satoshi's coins to move before 2027",5,0]
+].map(([category, question, pct, move]) => ({
+  category, question, probability: pct / 100, move,
+  source_label: "Demo price", updated_at: null
+}));
+
+let markets = [];
+let activeCat = "all";
+let query = "";
+const grid = document.getElementById("grid");
+const ticker = document.getElementById("ticker");
+
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function fmtUpdated(iso){
+  if (!iso) return "";
+  const d = new Date(iso);
+  return "updated " + d.toLocaleTimeString("en-AU", {hour:"numeric", minute:"2-digit"}).toLowerCase();
+}
+
+function render(){
+  grid.innerHTML = "";
+  markets.filter(m =>
+    (activeCat === "all" || m.category === activeCat) &&
+    (!query || (m.question + " " + m.category).toLowerCase().includes(query))
+  ).forEach(m => {
+    const pct = Math.round(m.probability * 100);
+    const cls = m.move > 0 ? "up" : (m.move < 0 ? "dn" : "flat");
+    const arrow = m.move > 0 ? "▲ +" : (m.move < 0 ? "▼ " : "· ");
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<div class="card-top"><span class="cat">' + esc(m.category) + '</span>' +
+      '<span class="move ' + cls + '">' + arrow + m.move + ' pts</span></div>' +
+      '<div class="q">' + esc(m.question) + '</div>' +
+      '<div class="price-row"><span class="pct">' + pct + '%</span><span class="pct-label">chance</span></div>' +
+      '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="meta"><span class="src">' + esc(m.source_label) + '</span><span>' + fmtUpdated(m.updated_at) + '</span></div>';
+    grid.appendChild(card);
+  });
+  if (!grid.children.length) {
+    grid.innerHTML = '<p class="empty">No markets match that. Try another word, or clear the search.</p>';
+  }
+  renderTicker();
+}
+
+function renderTicker(){
+  const items = markets.map(m => {
+    const pct = Math.round(m.probability * 100);
+    const cls = m.move >= 0 ? "up" : "dn";
+    return '<span><b>' + esc(m.question) + '</b> ' + pct + '% <span class="' + cls + '">' + (m.move >= 0 ? "▲" : "▼") + '</span></span>';
+  }).join("");
+  ticker.innerHTML = items + items;
+  // Hold a steady scroll speed no matter how many markets are on the board:
+  // ~4.5s of travel per market, so 9 markets ≈ 40s (the original pace).
+  ticker.style.animationDuration = Math.max(40, markets.length * 4.5) + "s";
+}
+
+document.querySelectorAll(".tab").forEach(t => {
+  t.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("on"));
+    t.classList.add("on");
+    activeCat = t.dataset.cat;
+    render();
+  });
+});
+
+async function loadPrices(){
+  try {
+    const r = await fetch("/api/prices");
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    if (!data.markets || !data.markets.length) throw new Error("empty feed");
+    markets = data.markets;
+    const newest = markets.reduce((a, m) => (m.updated_at > a ? m.updated_at : a), "");
+    document.getElementById("liveDot").classList.add("live");
+    document.getElementById("stampText").textContent = "Live · " + fmtUpdated(newest);
+  } catch (err) {
+    markets = DEMO;
+    document.getElementById("demoNote").classList.add("show");
+    document.getElementById("stampText").textContent = "Demo prices";
+  }
+  render();
+}
+
+document.getElementById("signupForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById("signupMsg");
+  msg.style.display = "block";
+  msg.textContent = "Subscribing...";
+  try {
+    const r = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email: document.getElementById("email").value })
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.error || "failed");
+    msg.textContent = "You're in. First reckoning lands this week.";
+    document.getElementById("email").value = "";
+  } catch (err) {
+    msg.textContent = "That did not go through. Give it another crack in a minute.";
+  }
+});
+
+document.getElementById("searchBox").addEventListener("input", (e) => {
+  query = e.target.value.trim().toLowerCase();
+  render();
+});
+
+document.getElementById("subscribeBtn").addEventListener("click", () => {
+  const target = document.querySelector(".signup");
+  const reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  target.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+  setTimeout(() => {
+    const r = target.getBoundingClientRect();
+    if (r.top > window.innerHeight || r.bottom < 0) target.scrollIntoView({ behavior: "auto" });
+    document.getElementById("email").focus({ preventScroll: true });
+  }, reduce ? 0 : 700);
+});
+
+loadPrices();
+</script>
+</body>
+</html>

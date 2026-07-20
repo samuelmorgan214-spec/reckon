@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reckon card maker</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --forest:#071A12; --surface:#0C2318; --surface2:#11301F;
+  --mint:#3DFFA2; --mint-dim:#1E7A50; --cream:#EDF5EF;
+  --muted:#7FA08C; --down:#FF7A6B; --line:#1A3A28;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;min-height:100vh;padding:30px 20px}
+.app{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:340px 1fr;gap:34px;align-items:start}
+@media(max-width:820px){.app{grid-template-columns:1fr}}
+
+h1{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--mint);letter-spacing:-0.5px;margin-bottom:6px}
+.sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+label{display:block;font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 6px}
+input[type=text],select{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--cream);font-family:'Inter',sans-serif;font-size:15px;padding:11px 13px}
+input[type=text]:focus,select:focus{outline:none;border-color:var(--mint-dim)}
+input[type=range]{width:100%;accent-color:var(--mint);margin-top:8px}
+.range-val{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--mint)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{margin-top:22px;width:100%;background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;padding:13px;border-radius:99px;cursor:pointer}
+.btn:hover{opacity:.9}
+.hint{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+.stage{display:flex;justify-content:center}
+.card{width:540px;height:540px;background:#071A12;border-radius:0;padding:44px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.card .cat{font-family:'Space Grotesk',sans-serif;font-size:15px;letter-spacing:0.14em;text-transform:uppercase;color:#7FA08C}
+.card .q{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;line-height:1.12;letter-spacing:-1px;color:#EDF5EF;margin-top:14px}
+.big{display:flex;align-items:baseline;gap:14px}
+.card .pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:120px;letter-spacing:-6px;color:#3DFFA2;line-height:1}
+.card .chance{font-family:'Space Grotesk',sans-serif;font-size:20px;color:#7FA08C}
+.card .mv{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:500;margin-top:6px}
+.card .mv.up{color:#3DFFA2}
+.card .mv.dn{color:#FF7A6B}
+.card .track{height:12px;background:#11301F;border-radius:99px;overflow:hidden;margin-top:22px}
+.card .fill{height:100%;background:#3DFFA2;border-radius:99px}
+.card .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px}
+.card .brand{display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;color:#3DFFA2;letter-spacing:-0.5px}
+.card .ask{font-family:'Space Grotesk',sans-serif;font-size:14px;color:#7FA08C}
+@media(max-width:620px){.stage{transform-origin:top left}.card{width:100%;height:auto;aspect-ratio:1/1;padding:26px}.card .q{font-size:24px}.card .pct{font-size:72px;letter-spacing:-3px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div>
+    <h1>reckon card maker</h1>
+    <div class="sub">Type a question, set the price, download the card. Post it wherever the argument is happening.</div>
+
+    <label for="q">The question</label>
+    <input type="text" id="q" maxlength="90" value="RBA to cut the cash rate in August">
+
+    <label for="cat">Category</label>
+    <select id="cat">
+      <option>Economy</option>
+      <option>Footy</option>
+      <option>Politics</option>
+      <option>Culture</option>
+    </select>
+
+    <label for="pct">The price</label>
+    <div class="range-val" id="pctVal">68%</div>
+    <input type="range" id="pct" min="1" max="99" value="68">
+
+    <div class="row2">
+      <div>
+        <label for="mv">Movement (pts)</label>
+        <input type="text" id="mv" value="+6" maxlength="4">
+      </div>
+      <div>
+        <label for="src">Source line</label>
+        <input type="text" id="src" value="Market implied" maxlength="30">
+      </div>
+    </div>
+
+    <button class="btn" id="dl">Download card (PNG)</button>
+    <div class="hint">1080 x 1080 output, sized for Instagram, X and LinkedIn. Tip: the question reads best under ten words.</div>
+  </div>
+
+  <div class="stage">
+    <div class="card" id="card">
+      <div>
+        <div class="cat" id="cCat">ECONOMY · MARKET IMPLIED</div>
+        <div class="q" id="cQ">RBA to cut the cash rate in August</div>
+      </div>
+      <div>
+        <div class="big">
+          <span class="pct" id="cPct">68%</span>
+          <span class="chance">chance</span>
+        </div>
+        <div class="mv up" id="cMv">▲ +6 pts this week</div>
+        <div class="track"><div class="fill" id="cFill" style="width:68%"></div></div>
+      </div>
+      <div class="foot">
+        <div class="brand">reckon</div>
+        <div class="ask">what do you reckon?</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const q = document.getElementById("q");
+const cat = document.getElementById("cat");
+const pct = document.getElementById("pct");
+const mv = document.getElementById("mv");
+const src = document.getElementById("src");
+
+function sync(){
+  document.getElementById("cQ").textContent = q.value || "Your question here";
+  document.getElementById("cCat").textContent = (cat.value + " · " + (src.value || "Market implied")).toUpperCase();
+  document.getElementById("cPct").textContent = pct.value + "%";
+  document.getElementById("pctVal").textContent = pct.value + "%";
+  document.getElementById("cFill").style.width = pct.value + "%";
+  const raw = (mv.value || "").trim();
+  const isDown = raw.startsWith("-");
+  const el = document.getElementById("cMv");
+  el.className = "mv " + (isDown ? "dn" : "up");
+  el.textContent = (isDown ? "▼ " : "▲ ") + raw.replace(/^[+-]/,(m)=>m==="-"?"-":"+") + " pts this week";
+  if(!raw){ el.textContent = ""; }
+}
+[q,cat,pct,mv,src].forEach(el => el.addEventListener("input", sync));
+sync();
+
+document.getElementById("dl").addEventListener("click", () => {
+  const card = document.getElementById("card");
+  html2canvas(card, {scale: 2, backgroundColor: "#071A12"}).then(canvas => {
+    const a = document.createElement("a");
+    a.download = "reckon-card.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  });
+});
+</script>
+</body>
+</html>

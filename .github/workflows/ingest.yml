@@ -1,0 +1,35 @@
+# Primary ingest scheduler. Vercel's free tier only runs daily crons, so the
+# daily crons in vercel.json are a backup and this workflow does the real cadence.
+#
+# Quota budget (The Odds API free tier, 500 credits/month):
+#   ingest-odds costs ~2-4 credits per run (2 match sports + any active outright sports).
+#   Every 3 hours = 8 runs/day ~= 480-640 credits/month. If it creeps over,
+#   widen the cron or upgrade the Odds API tier (cheap).
+#
+# Repo secrets required: SITE_URL (e.g. https://reckon.vercel.app), CRON_SECRET.
+name: ingest
+on:
+  schedule:
+    - cron: "0 */3 * * *"   # odds: every 3 hours
+    - cron: "15 6,20 * * *" # rba: twice daily (16:15 / 06:15 AEST)
+  workflow_dispatch: {}
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ingest bookmaker odds
+        if: github.event.schedule != '15 6,20 * * *'
+        run: |
+          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/ingest-odds"
+      - name: Ingest Kalshi exchange markets
+        if: github.event.schedule != '15 6,20 * * *'
+        run: |
+          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/ingest-kalshi"
+      - name: Ingest RBA rate tracker
+        if: github.event.schedule == '15 6,20 * * *' || github.event_name == 'workflow_dispatch'
+        run: |
+          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/ingest-rba"

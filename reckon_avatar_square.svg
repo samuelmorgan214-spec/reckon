@@ -1,0 +1,5 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" rx="200" fill="#071A12"/>
+  <text x="512" y="502" text-anchor="middle" font-family="'Arial Rounded MT Bold','Trebuchet MS',Arial,sans-serif" font-weight="700" font-size="178" letter-spacing="2" fill="#3DFFA2">reckon</text>
+  <path d="M 314 700 C 376 762 428 804 470 814 C 553 721 636 617 730 544" fill="none" stroke="#3DFFA2" stroke-width="52" stroke-linecap="round"/>
+</svg>

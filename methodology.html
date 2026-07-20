@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How our numbers work — Reckon</title>
+<meta name="description" content="Where Reckon's probabilities come from and how we adjust them. Plain English, no tricks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#071A12; --surface:#0C2318; --surface2:#11301F;
+  --mint:#3DFFA2; --mint-dim:#1E7A50; --cream:#EDF5EF;
+  --muted:#7FA08C; --line:#1A3A28;
+  color-scheme: dark;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:760px;margin:0 auto;padding:0 20px}
+header{padding:22px 0;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px;color:var(--mint);text-decoration:none}
+.tagline{font-size:13px;color:var(--muted)}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);letter-spacing:-1.2px;line-height:1.08;margin:44px 0 14px}
+.lede{color:var(--muted);font-size:17px;line-height:1.65;margin-bottom:36px}
+h2{font-family:'Space Grotesk',sans-serif;font-size:21px;letter-spacing:-0.4px;margin:38px 0 10px;color:var(--mint)}
+p{font-size:15px;line-height:1.7;color:var(--cream);margin-bottom:14px}
+p.dim{color:var(--muted)}
+code{font-family:ui-monospace,monospace;font-size:13px;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--mint)}
+.example{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);line-height:1.7;margin:14px 0}
+.example b{color:var(--cream);font-weight:500}
+footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 44px;font-size:12px;color:var(--muted);line-height:1.7}
+footer a{color:var(--mint-dim)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="logo" href="/">reckon</a>
+  <div class="tagline">how our numbers work</div>
+</header>
+
+<h1>Where the numbers come from, and what we do to them.</h1>
+<p class="lede">Every price on Reckon is sourced, adjusted and timestamped. Here is the whole method. It fits on one page because there are no tricks in it.</p>
+
+<h2>Where prices come from</h2>
+<p>Reckon reads prices from markets where people put real money behind their opinions. Right now that means Australian bookmakers (via an aggregated odds feed) and the ASX 30 Day Interbank Cash Rate Futures market for RBA questions. Exchange prices from Betfair and regulated overseas prediction markets are coming next.</p>
+<p class="dim">We never make up a number. If a card has no market behind it, it says so on the card.</p>
+
+<h2>From odds to probability</h2>
+<p>Decimal odds convert straight to an implied chance. The maths is one division: a price of <code>$4.00</code> implies <code>1 / 4.00 = 25%</code>.</p>
+
+<h2>Removing the bookie's margin</h2>
+<p>Add up a bookmaker's implied chances across every outcome of one market and you get more than 100%. That extra is the bookmaker's margin, the cut built into the prices. Quote raw implied chances and every number is inflated.</p>
+<p>Reckon always removes it. We divide each outcome's raw chance by the market's total, so the adjusted chances sum to exactly 100%.</p>
+<div class="example"><b>Example.</b> A bookie prices a game at $1.80 and $2.10. Raw implied chances are 55.6% and 47.6%, which sum to 103.2%. After adjustment: 53.9% and 46.1%. Those are the numbers we show.</div>
+
+<h2>One number from many bookies</h2>
+<p>When several bookmakers price the same market, we adjust each bookmaker's prices separately, then take the median for each outcome. The median beats the average because one bookie with a weird price cannot drag the number around.</p>
+<p class="dim">Cards show how many bookmakers went into the number, like "Consensus of 8 AU bookmakers, margin-adjusted".</p>
+
+<h2>Exchanges and futures</h2>
+<p>Exchange prices (like Betfair) come from people betting against each other, so there is no bookmaker margin to remove. Futures-implied figures (like the ASX RBA tracker) are published probabilities from traded interest rate contracts. Both are quoted as-is with their source named.</p>
+
+<h2>Attribution, always</h2>
+<p>Every price on Reckon carries its source and the time it was last updated. That includes the cards we post on social. If you ever see a Reckon number without a source on it, it is not ours.</p>
+
+<h2>Our track record</h2>
+<p>We snapshot every market's price on a schedule and record the outcome when events resolve. That log is permanent. Once enough markets have resolved we will publish the full calibration record: how often things we priced at 70% actually happened. Until the data can prove a claim, we will not make it.</p>
+
+<footer>
+  Reckon is an information and media product. Prices shown reflect external prediction markets and published odds, not markets operated by Reckon. Nothing here is financial advice or an inducement to gamble. If gambling is a problem for you or someone you know, call the National Gambling Helpline on 1800 858 858. <a href="/">Back to the board</a>
+</footer>
+</div>
+</body>
+</html>
