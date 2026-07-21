@@ -49,6 +49,29 @@ create table if not exists subscribers (
   created_at timestamptz default now()
 );
 
+-- Reader votes. "What do you reckon?" Yeah/Nah per market. One row per
+-- (market, anonymous browser id) so re-voting updates rather than stacks.
+-- This is the crowd's opinion, kept separate from the market price.
+create table if not exists votes (
+  id bigint generated always as identity primary key,
+  market_slug text not null,
+  voter_id text not null,
+  choice text not null check (choice in ('yes','no')),
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique (market_slug, voter_id)
+);
+create index if not exists votes_slug on votes (market_slug);
+
+-- Aggregated tally per market for fast reads on the site.
+create or replace view vote_tallies as
+select
+  market_slug,
+  count(*) filter (where choice = 'yes') as yes_votes,
+  count(*) filter (where choice = 'no') as no_votes
+from votes
+group by market_slug;
+
 -- Movement helper: current price plus the price ~7 days ago
 -- (falls back to the earliest snapshot when the market is younger than the window).
 create or replace view market_movement as

@@ -6,16 +6,18 @@ export default async function handler(req, res) {
   try {
     const supabase = serviceClient();
 
-    const [{ data: markets, error: e1 }, { data: movement, error: e2 }] = await Promise.all([
+    const [{ data: markets, error: e1 }, { data: movement, error: e2 }, { data: tallies, error: e3 }] = await Promise.all([
       supabase
         .from('markets')
         .select('id, slug, question, category, source_type, source_config, prices_current(probability, source_label, contributing_books, updated_at)')
         .eq('active', true),
       supabase.from('market_movement').select('market_id, current_probability, probability_then'),
+      supabase.from('vote_tallies').select('market_slug, yes_votes, no_votes'),
     ]);
-    if (e1 || e2) throw e1 || e2;
+    if (e1 || e2 || e3) throw e1 || e2 || e3;
 
     const moveById = Object.fromEntries((movement || []).map(m => [m.market_id, m]));
+    const tallyBySlug = Object.fromEntries((tallies || []).map(t => [t.market_slug, t]));
 
     const out = (markets || [])
       .filter(m => m.prices_current)
@@ -25,6 +27,7 @@ export default async function handler(req, res) {
         const movePts = mv && mv.probability_then != null
           ? Math.round((mv.current_probability - mv.probability_then) * 100)
           : 0;
+        const t = tallyBySlug[m.slug];
         return {
           slug: m.slug,
           question: m.question,
@@ -35,6 +38,8 @@ export default async function handler(req, res) {
           source_label: pc.source_label,
           contributing_books: pc.contributing_books,
           updated_at: pc.updated_at,
+          yes_votes: t ? Number(t.yes_votes) : 0,
+          no_votes: t ? Number(t.no_votes) : 0,
           meta: {
             commence_time: m.source_config?.commence_time || null,
           },

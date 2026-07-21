@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reckon — Instagram pinned assets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --forest:#071A12; --surface:#0C2318; --surface2:#11301F;
+  --mint:#3DFFA2; --mint-dim:#1E7A50; --cream:#EDF5EF;
+  --muted:#7FA08C; --line:#1A3A28;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#04120C;color:var(--cream);font-family:'Inter',sans-serif;padding:40px 20px;-webkit-font-smoothing:antialiased}
+.page{max-width:1200px;margin:0 auto}
+.page > h1{font-family:'Space Grotesk',sans-serif;font-size:24px;color:var(--mint);margin-bottom:6px}
+.page > p{color:var(--muted);font-size:14px;margin-bottom:34px;line-height:1.6}
+.row{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-start}
+.item{display:flex;flex-direction:column;gap:12px}
+.stage{width:367px;height:459px;overflow:hidden;border-radius:8px;border:1px solid var(--line)}
+.scale{transform:scale(0.34);transform-origin:top left}
+.dl{background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:11px 18px;border-radius:99px;cursor:pointer;width:100%}
+.dl:hover{opacity:.9}
+
+/* ---- Each asset renders at true 1080x1350; .scale shrinks it for preview only ---- */
+.asset{width:1080px;height:1350px;background:var(--forest);position:relative;overflow:hidden;font-family:'Inter',sans-serif}
+.wm{position:absolute;top:64px;left:72px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:46px;letter-spacing:-1px;color:var(--mint)}
+.foot{position:absolute;left:72px;bottom:64px;font-size:26px;color:var(--muted);letter-spacing:0.02em}
+
+/* Asset 1 — the hook */
+.a1 .headline{position:absolute;left:72px;top:400px;right:72px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:96px;line-height:1.05;letter-spacing:-3px;color:var(--cream)}
+.a1 .headline em{font-style:normal;color:var(--mint)}
+
+/* Asset 2 — what it is */
+.a2 .headline{position:absolute;left:72px;top:330px;right:72px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:74px;line-height:1.12;letter-spacing:-2px;color:var(--cream)}
+.a2 .headline em{font-style:normal;color:var(--mint)}
+.a2 .tags{position:absolute;left:72px;top:800px;display:flex;gap:18px;flex-wrap:wrap}
+.a2 .tag{border:2px solid var(--mint-dim);color:var(--mint);font-family:'Space Grotesk',sans-serif;font-size:34px;font-weight:500;padding:14px 30px;border-radius:99px}
+
+/* Asset 3 — the proof card */
+.a3 .card{position:absolute;left:72px;right:72px;top:300px;background:var(--surface);border:1px solid var(--line);border-radius:34px;padding:56px}
+.a3 .cat{font-family:'Space Grotesk',sans-serif;font-size:26px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+.a3 .q{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:56px;line-height:1.25;letter-spacing:-1px;color:var(--cream);margin:22px 0 40px}
+.a3 .price{display:flex;align-items:baseline;gap:16px}
+.a3 .pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:150px;letter-spacing:-6px;color:var(--mint);line-height:.9}
+.a3 .pl{font-size:34px;color:var(--muted)}
+.a3 .track{height:20px;background:var(--surface2);border-radius:99px;overflow:hidden;margin-top:40px}
+.a3 .fill{height:100%;width:68%;background:var(--mint);border-radius:99px}
+.a3 .src{font-size:24px;color:var(--mint-dim);margin-top:24px}
+.a3 .say{position:absolute;left:72px;right:72px;top:960px;font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:46px;line-height:1.3;letter-spacing:-1px;color:var(--cream)}
+.a3 .say em{font-style:normal;color:var(--mint)}
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>Reckon — Instagram pinned trio</h1>
+  <p>Three 1080 x 1350 assets, on-brand. Click a download button for a full-resolution PNG. Instagram crops the grid thumbnail to the centre, so the key text sits safely in the middle of each.</p>
+  <div class="row">
+
+    <div class="item">
+      <div class="stage"><div class="scale">
+        <div class="asset a1" id="asset1">
+          <div class="wm">reckon</div>
+          <div class="headline">The polls say one thing.<br><em>The markets</em> say another.</div>
+          <div class="foot">what do you reckon?</div>
+        </div>
+      </div></div>
+      <button class="dl" onclick="save('asset1','reckon-pin-1-hook')">Download post 1</button>
+    </div>
+
+    <div class="item">
+      <div class="stage"><div class="scale">
+        <div class="asset a2" id="asset2">
+          <div class="wm">reckon</div>
+          <div class="headline">We track what the <em>money</em> actually believes about the questions Australians argue about.</div>
+          <div class="tags">
+            <span class="tag">Footy</span><span class="tag">Politics</span>
+            <span class="tag">Economy</span><span class="tag">Crypto</span>
+          </div>
+          <div class="foot">what do you reckon?</div>
+        </div>
+      </div></div>
+      <button class="dl" onclick="save('asset2','reckon-pin-2-what')">Download post 2</button>
+    </div>
+
+    <div class="item">
+      <div class="stage"><div class="scale">
+        <div class="asset a3" id="asset3">
+          <div class="wm">reckon</div>
+          <div class="card">
+            <div class="cat">Economy</div>
+            <div class="q">RBA to cut the cash rate in August</div>
+            <div class="price"><span class="pct">68%</span><span class="pl">chance</span></div>
+            <div class="track"><div class="fill"></div></div>
+            <div class="src">ASX futures implied</div>
+          </div>
+          <div class="say">Real prices. The bookie margin stripped out. Always sourced.<br><em>Follow for the numbers behind the arguments.</em></div>
+        </div>
+      </div></div>
+      <button class="dl" onclick="save('asset3','reckon-pin-3-proof')">Download post 3</button>
+    </div>
+
+  </div>
+</div>
+<script>
+async function save(id, name){
+  const node = document.getElementById(id);
+  // html2canvas mis-measures text inside a scaled-down parent, so lift the
+  // preview scale off this asset's stage during capture, then restore it.
+  const scaleEl = node.closest(".stage").querySelector(".scale");
+  const prev = scaleEl.style.transform;
+  scaleEl.style.transform = "none";
+  try {
+    const canvas = await html2canvas(node, {width:1080, height:1350, scale:2, backgroundColor:null, useCORS:true});
+    const a = document.createElement("a");
+    a.download = name + ".png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  } finally {
+    scaleEl.style.transform = prev;
+  }
+}
+</script>
+</body>
+</html>

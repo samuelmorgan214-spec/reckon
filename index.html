@@ -80,6 +80,16 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .meta{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);line-height:1.5}
 .src{color:var(--mint-dim)}
 
+.vote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
+.vote-q{font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--muted)}
+.vbtns{display:flex;gap:8px;margin-left:auto}
+.vbtn{background:none;border:1px solid var(--line);color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;padding:6px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
+.vbtn:hover{border-color:var(--mint-dim)}
+.vbtn.on{background:var(--mint);border-color:var(--mint);color:var(--forest);font-weight:700}
+.vbtn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.vote-said{width:100%;font-size:12px;color:var(--mint-dim);display:none}
+.vote.voted .vote-said{display:block}
+
 .note{border:1px dashed var(--mint-dim);border-radius:12px;padding:14px 16px;margin-bottom:26px;font-size:13px;color:var(--muted);line-height:1.6;display:none}
 .note.show{display:block}
 .note b{color:var(--cream);font-weight:500}
@@ -253,14 +263,101 @@ function render(){
       '<div class="q">' + esc(m.question) + '</div>' +
       '<div class="price-row"><span class="pct">' + pct + '%</span><span class="pct-label">chance</span></div>' +
       '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>' +
-      '<div class="meta"><span class="src">' + esc(m.source_label) + '</span><span>' + fmtUpdated(m.updated_at) + '</span></div>';
+      '<div class="meta"><span class="src">' + esc(m.source_label) + '</span><span>' + fmtUpdated(m.updated_at) + '</span></div>' +
+      '<div class="vote" data-q="' + esc(m.question) + '" data-slug="' + esc(m.slug || "") + '">' +
+        '<span class="vote-q">what do you reckon?</span>' +
+        '<div class="vbtns">' +
+          '<button class="vbtn" data-v="yes">Yeah</button>' +
+          '<button class="vbtn" data-v="no">Nah</button>' +
+        '</div>' +
+        '<span class="vote-said"></span>' +
+      '</div>';
     grid.appendChild(card);
   });
   if (!grid.children.length) {
     grid.innerHTML = '<p class="empty">No markets match that. Try another word, or clear the search.</p>';
   }
+  document.querySelectorAll(".vote").forEach(applyVote);
   renderTicker();
 }
+
+// "What do you reckon?" vote. Records the visitor's own call against the market
+// number. Stored per-browser for now; upgrades to an aggregated tally when a
+// votes endpoint lands (no invented crowd figures until then).
+function loadVotes(){ try { return JSON.parse(localStorage.getItem("reckon_votes") || "{}"); } catch(e){ return {}; } }
+let votes = loadVotes();
+
+// Anonymous per-browser id so a reader can change their vote without stacking,
+// and so the server can dedupe. Not tied to any identity.
+function voterId(){
+  let id = localStorage.getItem("reckon_voter_id");
+  if (!id) {
+    id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+    localStorage.setItem("reckon_voter_id", id);
+  }
+  return id;
+}
+
+function marketFor(voteEl){
+  const slug = voteEl.dataset.slug, q = voteEl.dataset.q;
+  return markets.find(x => (slug && x.slug === slug) || x.question === q);
+}
+
+function applyVote(voteEl){
+  const q = voteEl.dataset.q;
+  const v = votes[q];
+  voteEl.querySelectorAll(".vbtn").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+
+  const m = marketFor(voteEl);
+  const pct = m ? Math.round(m.probability * 100) : null;
+  const total = m ? (m.yes_votes || 0) + (m.no_votes || 0) : 0;
+  const said = voteEl.querySelector(".vote-said");
+
+  if (total > 0) {
+    // Real crowd data from the backend: show the readers vs the money.
+    const readerYes = Math.round((m.yes_votes / total) * 100);
+    said.textContent = "Readers " + readerYes + "% yeah" + (v ? " (you're in)" : "") +
+      ". The money" + (pct == null ? "." : " " + pct + "%.");
+    voteEl.classList.add("voted");
+  } else if (v) {
+    // No crowd data yet (or no backend): your pick against the market number.
+    said.textContent = pct == null ? "Locked in." :
+      (v === "yes" ? "You reckon it happens. The money says " + pct + "%."
+                   : "You reckon it won't. The money says " + pct + "%.");
+    voteEl.classList.add("voted");
+  } else {
+    voteEl.classList.remove("voted");
+  }
+}
+
+async function sendVote(slug, choice){
+  if (!slug) return null;   // demo/preview markets have no slug -> stay local-only
+  try {
+    const r = await fetch("/api/vote", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ slug, voter_id: voterId(), choice })
+    });
+    if (!r.ok) return null;
+    return await r.json();   // { yes_votes, no_votes }
+  } catch (e) { return null; }
+}
+
+grid.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".vbtn");
+  if (!btn) return;
+  const voteEl = btn.closest(".vote");
+  const choice = btn.dataset.v;
+  votes[voteEl.dataset.q] = choice;
+  localStorage.setItem("reckon_votes", JSON.stringify(votes));
+  applyVote(voteEl);
+  // Send it up; if the backend answers, fold the fresh tally in and re-render.
+  const tally = await sendVote(voteEl.dataset.slug, choice);
+  if (tally) {
+    const m = marketFor(voteEl);
+    if (m) { m.yes_votes = tally.yes_votes; m.no_votes = tally.no_votes; applyVote(voteEl); }
+  }
+});
 
 function renderTicker(){
   const items = markets.map(m => {
