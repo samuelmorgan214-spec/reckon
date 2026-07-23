@@ -8,20 +8,36 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --forest:#071A12;
-  --surface:#0C2318;
-  --surface2:#11301F;
-  --mint:#3DFFA2;
-  --mint-dim:#1E7A50;
-  --cream:#EDF5EF;
-  --muted:#7FA08C;
-  --down:#FF7A6B;
-  --line:#1A3A28;
+:root, [data-theme="dark"]{
+  --forest:#0A0E1A;
+  --surface:#10141F;
+  --surface2:#1A2035;
+  --mint:#2E6BFF;
+  --mint-dim:#1E3A8A;
+  --cream:#F1F5F9;
+  --muted:#8B93A7;
+  --up:#3DFFA2;
+  --down:#EF4444;
+  --line:#202A42;
+  --on-accent:#FFFFFF;
   color-scheme: dark;
 }
+[data-theme="light"]{
+  --forest:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface2:#F1F5F9;
+  --mint:#2E6BFF;
+  --mint-dim:#1D4ED8;
+  --cream:#0F172A;
+  --muted:#64748B;
+  --up:#16A34A;
+  --down:#DC2626;
+  --line:#E2E8F0;
+  --on-accent:#FFFFFF;
+  color-scheme: light;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;transition:background .15s,color .15s}
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 
 header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
@@ -33,8 +49,11 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .search{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:13px;padding:8px 16px;width:190px;transition:border-color .15s}
 .search:focus{outline:none;border-color:var(--mint-dim)}
 .search::placeholder{color:var(--muted)}
-.subscribe-btn{background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:8px 18px;border-radius:99px;cursor:pointer}
+.subscribe-btn{background:var(--mint);border:none;color:var(--on-accent);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:8px 18px;border-radius:99px;cursor:pointer}
 .subscribe-btn:hover{opacity:.9}
+.theme-btn{width:34px;height:34px;border-radius:99px;border:1px solid var(--line);background:var(--surface2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.theme-btn:hover{border-color:var(--mint-dim)}
+.theme-btn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 .empty{color:var(--muted);font-size:14px;padding:30px 4px;grid-column:1/-1}
 @media(max-width:720px){.tagline{display:none}.search{width:130px}}
 
@@ -42,7 +61,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .ticker-inner{display:inline-block;padding:9px 0;animation:tick 40s linear infinite;font-family:'Space Grotesk',sans-serif;font-size:13px}
 .ticker-inner span{margin:0 26px;color:var(--muted)}
 .ticker-inner b{color:var(--cream);font-weight:500}
-.ticker-inner .up{color:var(--mint)}
+.ticker-inner .up{color:var(--up)}
 .ticker-inner .dn{color:var(--down)}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media (prefers-reduced-motion: reduce){.ticker-inner{animation:none}}
@@ -56,7 +75,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .tabs{display:flex;gap:8px;flex-wrap:wrap}
 .tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:14px;padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
 .tab:hover{border-color:var(--mint-dim);color:var(--cream)}
-.tab.on{background:var(--mint);border-color:var(--mint);color:var(--forest);font-weight:700}
+.tab.on{background:var(--mint);border-color:var(--mint);color:var(--on-accent);font-weight:700}
 .tab:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 .stamp{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px}
 .dot{width:8px;height:8px;border-radius:99px;background:var(--muted)}
@@ -68,7 +87,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .cat{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Space Grotesk',sans-serif}
 .move{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500}
-.move.up{color:var(--mint)}
+.move.up{color:var(--up)}
 .move.dn{color:var(--down)}
 .move.flat{color:var(--muted)}
 .q{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-0.3px;min-height:47px}
@@ -85,7 +104,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .vbtns{display:flex;gap:8px;margin-left:auto}
 .vbtn{background:none;border:1px solid var(--line);color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;padding:6px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
 .vbtn:hover{border-color:var(--mint-dim)}
-.vbtn.on{background:var(--mint);border-color:var(--mint);color:var(--forest);font-weight:700}
+.vbtn.on{background:var(--mint);border-color:var(--mint);color:var(--on-accent);font-weight:700}
 .vbtn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
 .vote-said{width:100%;font-size:12px;color:var(--mint-dim);display:none}
 .vote.voted .vote-said{display:block}
@@ -94,13 +113,40 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .note.show{display:block}
 .note b{color:var(--cream);font-weight:500}
 
+.f2{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:26px}
+.f2-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.f2-badge{display:flex;align-items:center;gap:7px;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.f2-badge .dot{width:8px;height:8px;border-radius:99px;background:var(--mint);box-shadow:0 0 8px var(--mint)}
+.f2-nav{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+.f2-nav button{width:26px;height:26px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;transition:all .15s}
+.f2-nav button:hover{border-color:var(--mint-dim);color:var(--cream)}
+.f2-nav button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+.f2-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.6px;margin-bottom:22px}
+.f2-body{display:grid;grid-template-columns:1fr 1.3fr;gap:32px}
+@media(max-width:800px){.f2-body{grid-template-columns:1fr}}
+.f2-thead{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.f2-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.f2-name{font-family:'Space Grotesk',sans-serif;font-size:15px;position:relative;padding-bottom:3px}
+.f2-name::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--row-color,var(--line))}
+.f2-payout{font-size:13px;color:var(--muted)}
+.f2-odds{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:99px;padding:5px 14px}
+.f2-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:12px 0}
+.f2-meta a{color:var(--mint-dim)}
+.f2-news{font-size:13px;color:var(--muted);line-height:1.6;padding-top:10px;border-top:1px solid var(--line)}
+.f2-news b{color:var(--cream);font-weight:500}
+.f2-legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:8px}
+.f2-legend i{display:inline-block;width:8px;height:8px;border-radius:99px;margin-right:6px}
+.f2-legend b{color:var(--cream);font-weight:700;margin-left:4px}
+.f2-chart svg{display:block;width:100%;height:auto}
+@media(max-width:600px){.f2-title{font-size:21px}}
+
 .signup{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;margin:10px 0 60px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
 .signup h2{font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:-0.5px}
 .signup p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;max-width:440px}
 .signup form{display:flex;gap:10px;flex-wrap:wrap}
 .signup input{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:12px 18px;min-width:240px}
 .signup input:focus{outline:none;border-color:var(--mint-dim)}
-.signup button{background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:12px 22px;border-radius:99px;cursor:pointer}
+.signup button{background:var(--mint);border:none;color:var(--on-accent);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:12px 22px;border-radius:99px;cursor:pointer}
 .signup button:hover{opacity:.9}
 .signup .msg{width:100%;font-size:13px;color:var(--mint);margin-top:4px;display:none}
 
@@ -119,6 +165,7 @@ footer a{color:var(--mint-dim)}
   </div>
   <div class="head-right">
     <input class="search" id="searchBox" type="search" placeholder="Search markets" aria-label="Search markets">
+    <button class="theme-btn" id="themeBtn" aria-label="Switch to light theme">☀️</button>
     <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
   </div>
 </header>
@@ -135,6 +182,27 @@ footer a{color:var(--mint-dim)}
 </section>
 
 <div class="note" id="demoNote"><b>Demo prices.</b> The live feed could not be reached, so the board is showing illustrative placeholder prices. Refresh in a minute.</div>
+
+<div class="f2">
+  <div class="f2-top">
+    <span class="f2-badge" id="f2Cat"><span class="dot"></span> Politics</span>
+    <span class="f2-nav"><button id="f2Prev" aria-label="Previous featured market">&larr;</button><span id="f2Count">1 of 5</span><button id="f2Next" aria-label="Next featured market">&rarr;</button></span>
+  </div>
+  <h2 class="f2-title" id="f2Title">Next Prime Minister of Australia</h2>
+  <div class="f2-body">
+    <div>
+      <div class="f2-thead"><span>Market</span><span>Pays out</span><span>Odds</span></div>
+      <div class="f2-row lead" id="f2Row1"><span class="f2-name"></span><span class="f2-payout"></span><span class="f2-odds"></span></div>
+      <div class="f2-row second" id="f2Row2"><span class="f2-name"></span><span class="f2-payout"></span><span class="f2-odds"></span></div>
+      <div class="f2-meta"><span>Demo price</span><span id="f2More"></span></div>
+      <div class="f2-news" id="f2News"></div>
+    </div>
+    <div>
+      <div class="f2-legend" id="f2Legend"></div>
+      <div class="f2-chart" id="pmChart"></div>
+    </div>
+  </div>
+</div>
 
 <div class="bar">
   <div class="tabs" role="tablist" aria-label="Market categories">
@@ -174,6 +242,21 @@ footer a{color:var(--mint-dim)}
 </div>
 
 <script>
+let currentTheme = localStorage.getItem("reckon_theme") || "dark";
+function applyTheme(t){
+  currentTheme = t;
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = document.getElementById("themeBtn");
+  btn.textContent = t === "dark" ? "☀️" : "🌙";
+  btn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  localStorage.setItem("reckon_theme", t);
+}
+applyTheme(currentTheme);
+document.getElementById("themeBtn").addEventListener("click", () => {
+  applyTheme(currentTheme === "dark" ? "light" : "dark");
+  renderFeatured(featuredIndex);
+});
+
 // Demo fallback only renders when /api/prices is unreachable, and says so.
 // [category, question, percent chance, 7-day move in points]
 const DEMO = [
@@ -246,12 +329,33 @@ function fmtUpdated(iso){
   return "updated " + d.toLocaleTimeString("en-AU", {hour:"numeric", minute:"2-digit"}).toLowerCase();
 }
 
+// Round-robins across categories (footy, sports, politics, economy, crypto...)
+// so "All markets" reads as a varied mix instead of one long block per category.
+function interleaveByCategory(list){
+  const groups = {}, order = [];
+  list.forEach(m => {
+    if (!groups[m.category]) { groups[m.category] = []; order.push(m.category); }
+    groups[m.category].push(m);
+  });
+  const result = [];
+  let added = true;
+  while (added) {
+    added = false;
+    for (const cat of order) {
+      if (groups[cat].length) { result.push(groups[cat].shift()); added = true; }
+    }
+  }
+  return result;
+}
+
 function render(){
   grid.innerHTML = "";
-  markets.filter(m =>
+  let filtered = markets.filter(m =>
     (activeCat === "all" || m.category === activeCat) &&
     (!query || (m.question + " " + m.category).toLowerCase().includes(query))
-  ).forEach(m => {
+  );
+  if (activeCat === "all") filtered = interleaveByCategory(filtered);
+  filtered.forEach(m => {
     const pct = Math.round(m.probability * 100);
     const cls = m.move > 0 ? "up" : (m.move < 0 ? "dn" : "flat");
     const arrow = m.move > 0 ? "▲ +" : (m.move < 0 ? "▼ " : "· ");
@@ -433,6 +537,138 @@ document.getElementById("subscribeBtn").addEventListener("click", () => {
     document.getElementById("email").focus({ preventScroll: true });
   }, reduce ? 0 : 700);
 });
+
+function seedFromString(str){let h=0;for(let i=0;i<str.length;i++){h=(Math.imul(31,h)+str.charCodeAt(i))|0}return h>>>0}
+function mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=(t+Math.imul(t^t>>>7,61|t))^t;return ((t^t>>>14)>>>0)/4294967296}}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+
+function seededSeries(seed, end, startBias, n){
+  const rand = mulberry32(seedFromString(seed));
+  const start = clamp(end + startBias, 1, 85);
+  const pts = [start];
+  for(let i=1;i<n-1;i++){
+    const t = i/(n-1);
+    const base = start + (end-start)*t;
+    pts.push(clamp(base + (rand()-0.5)*5, 1, 85));
+  }
+  pts.push(end);
+  return pts;
+}
+
+const FEATURED = [
+  { category:"Politics", title:"Next Prime Minister of Australia",
+    rows:[{name:"Anthony Albanese", pct:47},{name:"Sussan Ley", pct:21}], more:3,
+    why:"Albanese holds the edge as sitting PM, but a tighter opposition under Ley and a live succession conversation inside Labor keep the field open.",
+    series:[{name:"Albanese", color:"#047857", end:47, bias:-8},{name:"Ley", color:"#2563EB", end:21, bias:7},{name:"Chalmers", color:"#D97706", end:12, bias:-3}] },
+  { category:"Footy", title:"2026 AFL Premiership Winner",
+    rows:[{name:"Collingwood", pct:17},{name:"Brisbane Lions", pct:15}], more:16,
+    why:"Collingwood's forward line has cooled through winter, letting the Lions and the Cats close the gap at the top of the market.",
+    series:[{name:"Collingwood", color:"#047857", end:17, bias:5},{name:"Lions", color:"#2563EB", end:15, bias:-4},{name:"Geelong", color:"#D97706", end:13, bias:3}] },
+  { category:"Economy", title:"Cash Rate at the December Meeting",
+    rows:[{name:"3.00%–3.25%", pct:38},{name:"3.25%–3.50%", pct:34}], more:1,
+    why:"Futures pricing has firmed toward another cut, but sticky services inflation keeps a hold live too.",
+    series:[{name:"3.00–3.25%", color:"#047857", end:38, bias:-6},{name:"3.25–3.50%", color:"#2563EB", end:34, bias:5},{name:"Above 3.50%", color:"#D97706", end:28, bias:2}] },
+  { category:"Sports", title:"2026 World Cup Winner",
+    rows:[{name:"Spain", pct:59},{name:"Argentina", pct:41}], more:0,
+    why:"Spain have gone in as favourites since the semi final and the market hasn't budged much since.",
+    series:[{name:"Spain", color:"#047857", end:59, bias:-10},{name:"Argentina", color:"#2563EB", end:41, bias:10}] },
+  { category:"Crypto", title:"Bitcoin Price at Year End",
+    rows:[{name:"Under $100k", pct:46},{name:"$100k–$150k", pct:40}], more:1,
+    why:"Bitcoin has spent most of the year range bound, keeping the middle bracket the closest call on the board.",
+    series:[{name:"Under $100k", color:"#047857", end:46, bias:6},{name:"$100k–150k", color:"#2563EB", end:40, bias:-5},{name:"Above $150k", color:"#D97706", end:14, bias:-1}] }
+];
+let featuredIndex = 0;
+
+const CHART_PALETTE = {
+  dark:  { series:["#2E6BFF","#3DFFA2","#FFB84D"], grid:"#202A42", label:"#8B93A7" },
+  light: { series:["#2E6BFF","#16A34A","#D97706"], grid:"#E2E8F0", label:"#64748B" }
+};
+function seriesColor(idx){ return CHART_PALETTE[currentTheme].series[idx]; }
+
+function payoutFor(pct){ return (100/pct).toFixed(2) + "x"; }
+
+function renderFeatured(i){
+  const f = FEATURED[i];
+  document.getElementById("f2Cat").innerHTML = `<span class="dot"></span> ${f.category}`;
+  document.getElementById("f2Title").textContent = f.title;
+  document.getElementById("f2Count").textContent = (i+1) + " of " + FEATURED.length;
+
+  [1,2].forEach(n => {
+    const row = f.rows[n-1], color = seriesColor(n-1);
+    const el = document.getElementById("f2Row" + n);
+    el.querySelector(".f2-name").textContent = row.name;
+    el.querySelector(".f2-name").style.setProperty("--row-color", color);
+    el.querySelector(".f2-payout").textContent = payoutFor(row.pct);
+    const odds = el.querySelector(".f2-odds");
+    odds.textContent = row.pct + "%";
+    odds.style.borderColor = color;
+    odds.style.color = color;
+  });
+
+  document.getElementById("f2More").textContent = f.more > 0 ? f.more + " more" : "";
+  document.getElementById("f2News").innerHTML = `<b>Why it moved.</b> ${f.why}`;
+  document.getElementById("f2Legend").innerHTML = f.series.map((s,idx) =>
+    `<span><i style="background:${seriesColor(idx)}"></i>${s.name}<b>${s.end}%</b></span>`
+  ).join("");
+
+  renderF2Chart(f.series);
+}
+
+document.getElementById("f2Prev").addEventListener("click", () => {
+  featuredIndex = (featuredIndex - 1 + FEATURED.length) % FEATURED.length;
+  renderFeatured(featuredIndex);
+});
+document.getElementById("f2Next").addEventListener("click", () => {
+  featuredIndex = (featuredIndex + 1) % FEATURED.length;
+  renderFeatured(featuredIndex);
+});
+
+function renderF2Chart(series){
+  const el = document.getElementById("pmChart");
+  if (!el) return;
+  const n = 26;
+  const W = 600, H = 260, padL = 8, padR = 8, padT = 14, padB = 26;
+  const yMax = 80;
+  const x = i => padL + (i/(n-1)) * (W-padL-padR);
+  const y = v => (H-padB) - (v/yMax) * (H-padT-padB);
+
+  const pal = CHART_PALETTE[currentTheme];
+  let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  // gridlines + y labels
+  [0,20,40,60,80].forEach(v => {
+    svg += `<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="${pal.grid}" stroke-width="1"/>`;
+    svg += `<text x="${W-padR}" y="${y(v)-4}" text-anchor="end" font-size="10" fill="${pal.label}" font-family="Space Grotesk, sans-serif">${v}%</text>`;
+  });
+  // x labels
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul"];
+  months.forEach((m, i) => {
+    const xi = padL + (i/(months.length-1)) * (W-padL-padR);
+    svg += `<text x="${xi}" y="${H-8}" text-anchor="middle" font-size="10" fill="${pal.label}" font-family="Space Grotesk, sans-serif">${m}</text>`;
+  });
+  // lines
+  const endpoints = [];
+  series.forEach((s, idx) => {
+    const color = seriesColor(idx);
+    const pts = seededSeries(s.name, s.end, s.bias, n);
+    const path = pts.map((v,i) => (i===0?"M":"L") + x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
+    svg += `<path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    endpoints.push({ name:s.name, color, cx:x(n-1), cy:y(s.end), end:s.end });
+  });
+  // "today" marker line
+  svg += `<line x1="${x(n-1)}" y1="${padT}" x2="${x(n-1)}" y2="${H-padB}" stroke="${pal.grid}" stroke-width="1" stroke-dasharray="3,3"/>`;
+  // endpoint dots + labels, nudged apart if values sit close together
+  const sorted = endpoints.slice().sort((a,b) => b.end - a.end);
+  sorted.forEach((p, i) => {
+    if (i > 0 && sorted[i-1].cy - p.cy < 16) p.cy = sorted[i-1].cy + 16;
+  });
+  sorted.forEach(p => {
+    svg += `<circle cx="${p.cx}" cy="${endpoints.find(e=>e.name===p.name).cy}" r="4" fill="${p.color}"/>`;
+    svg += `<text x="${p.cx-10}" y="${p.cy+4}" text-anchor="end" font-size="12" font-weight="700" fill="${p.color}" font-family="Space Grotesk, sans-serif">${p.name} ${p.end}%</text>`;
+  });
+  svg += `</svg>`;
+  el.innerHTML = svg;
+}
+renderFeatured(featuredIndex);
 
 loadPrices();
 </script>
