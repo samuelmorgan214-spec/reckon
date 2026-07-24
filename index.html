@@ -6,7 +6,7 @@
 <title>Reckon — what the markets say</title>
 <meta name="description" content="Reckon tracks what betting and prediction markets imply about the questions Australians argue about. Footy, politics, the economy.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root, [data-theme="dark"]{
   --forest:#0A0E1A;
@@ -42,14 +42,14 @@ body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;
 
 header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand-group{display:flex;align-items:baseline;gap:14px}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px;color:var(--mint)}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px;color:var(--mint)}
 .logo svg{display:block}
 .tagline{font-size:13px;color:var(--muted);letter-spacing:0.04em}
 .head-right{display:flex;align-items:center;gap:14px}
 .search{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:13px;padding:8px 16px;width:190px;transition:border-color .15s}
 .search:focus{outline:none;border-color:var(--mint-dim)}
 .search::placeholder{color:var(--muted)}
-.subscribe-btn{background:var(--mint);border:none;color:var(--on-accent);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;padding:8px 18px;border-radius:99px;cursor:pointer}
+.subscribe-btn{background:var(--mint);border:none;color:var(--on-accent);font-family:'Inter',sans-serif;font-weight:700;font-size:13px;padding:8px 18px;border-radius:99px;cursor:pointer}
 .subscribe-btn:hover{opacity:.9}
 .theme-btn{width:34px;height:34px;border-radius:99px;border:1px solid var(--line);background:var(--surface2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
 .theme-btn:hover{border-color:var(--mint-dim)}
@@ -58,7 +58,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 @media(max-width:720px){.tagline{display:none}.search{width:130px}}
 
 .ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;background:var(--surface)}
-.ticker-inner{display:inline-block;padding:9px 0;animation:tick 40s linear infinite;font-family:'Space Grotesk',sans-serif;font-size:13px}
+.ticker-inner{display:inline-block;padding:9px 0;animation:tick 40s linear infinite;font-family:'Inter',sans-serif;font-size:13px}
 .ticker-inner span{margin:0 26px;color:var(--muted)}
 .ticker-inner b{color:var(--cream);font-weight:500}
 .ticker-inner .up{color:var(--up)}
@@ -67,13 +67,13 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 @media (prefers-reduced-motion: reduce){.ticker-inner{animation:none}}
 
 .hero{padding:56px 0 34px}
-.hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,5.5vw,58px);line-height:1.04;letter-spacing:-1.5px;max-width:720px}
+.hero h1{font-family:'Inter',sans-serif;font-weight:700;font-size:clamp(34px,5.5vw,58px);line-height:1.04;letter-spacing:-1.5px;max-width:720px}
 .hero h1 em{font-style:normal;color:var(--mint)}
 .hero p{margin-top:16px;color:var(--muted);font-size:16px;max-width:560px;line-height:1.6}
 
 .bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:26px 0 18px;flex-wrap:wrap}
 .tabs{display:flex;gap:8px;flex-wrap:wrap}
-.tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:14px;padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
+.tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:'Inter',sans-serif;font-size:14px;padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
 .tab:hover{border-color:var(--mint-dim);color:var(--cream)}
 .tab.on{background:var(--mint);border-color:var(--mint);color:var(--on-accent);font-weight:700}
 .tab:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
@@ -85,14 +85,14 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;transition:border-color .15s;display:flex;flex-direction:column;gap:14px}
 .card:hover{border-color:var(--mint-dim)}
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.cat{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Space Grotesk',sans-serif}
-.move{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500}
+.cat{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Inter',sans-serif}
+.move{font-family:'Inter',sans-serif;font-size:13px;font-weight:500}
 .move.up{color:var(--up)}
 .move.dn{color:var(--down)}
 .move.flat{color:var(--muted)}
-.q{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-0.3px;min-height:47px}
+.q{font-family:'Inter',sans-serif;font-weight:500;font-size:18px;line-height:1.3;letter-spacing:-0.3px;min-height:47px}
 .price-row{display:flex;align-items:baseline;gap:8px}
-.pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:44px;letter-spacing:-2px;color:var(--mint)}
+.pct{font-family:'Inter',sans-serif;font-weight:700;font-size:44px;letter-spacing:-2px;color:var(--mint)}
 .pct-label{font-size:13px;color:var(--muted)}
 .track{height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
 .fill{height:100%;background:var(--mint);border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
@@ -100,9 +100,9 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .src{color:var(--mint-dim)}
 
 .vote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
-.vote-q{font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--muted)}
+.vote-q{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted)}
 .vbtns{display:flex;gap:8px;margin-left:auto}
-.vbtn{background:none;border:1px solid var(--line);color:var(--cream);font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500;padding:6px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
+.vbtn{background:none;border:1px solid var(--line);color:var(--cream);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;padding:6px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
 .vbtn:hover{border-color:var(--mint-dim)}
 .vbtn.on{background:var(--mint);border-color:var(--mint);color:var(--on-accent);font-weight:700}
 .vbtn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
@@ -115,21 +115,21 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 
 .f2{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;margin-bottom:26px}
 .f2-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.f2-badge{display:flex;align-items:center;gap:7px;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.f2-badge{display:flex;align-items:center;gap:7px;font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .f2-badge .dot{width:8px;height:8px;border-radius:99px;background:var(--mint);box-shadow:0 0 8px var(--mint)}
-.f2-nav{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+.f2-nav{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);font-family:'Inter',sans-serif}
 .f2-nav button{width:26px;height:26px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;transition:all .15s}
 .f2-nav button:hover{border-color:var(--mint-dim);color:var(--cream)}
 .f2-nav button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
-.f2-title{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.6px;margin-bottom:22px}
+.f2-title{font-family:'Inter',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.6px;margin-bottom:22px}
 .f2-body{display:grid;grid-template-columns:1fr 1.3fr;gap:32px}
 @media(max-width:800px){.f2-body{grid-template-columns:1fr}}
 .f2-thead{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line)}
 .f2-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
-.f2-name{font-family:'Space Grotesk',sans-serif;font-size:15px;position:relative;padding-bottom:3px}
+.f2-name{font-family:'Inter',sans-serif;font-size:15px;position:relative;padding-bottom:3px}
 .f2-name::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--row-color,var(--line))}
 .f2-payout{font-size:13px;color:var(--muted)}
-.f2-odds{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:99px;padding:5px 14px}
+.f2-odds{font-family:'Inter',sans-serif;font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:99px;padding:5px 14px}
 .f2-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:12px 0}
 .f2-meta a{color:var(--mint-dim)}
 .f2-news{font-size:13px;color:var(--muted);line-height:1.6;padding-top:10px;border-top:1px solid var(--line)}
@@ -141,17 +141,17 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 @media(max-width:600px){.f2-title{font-size:21px}}
 
 .signup{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;margin:10px 0 60px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.signup h2{font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:-0.5px}
+.signup h2{font-family:'Inter',sans-serif;font-size:22px;letter-spacing:-0.5px}
 .signup p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;max-width:440px}
 .signup form{display:flex;gap:10px;flex-wrap:wrap}
 .signup input{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:12px 18px;min-width:240px}
 .signup input:focus{outline:none;border-color:var(--mint-dim)}
-.signup button{background:var(--mint);border:none;color:var(--on-accent);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:12px 22px;border-radius:99px;cursor:pointer}
+.signup button{background:var(--mint);border:none;color:var(--on-accent);font-family:'Inter',sans-serif;font-weight:700;font-size:14px;padding:12px 22px;border-radius:99px;cursor:pointer}
 .signup button:hover{opacity:.9}
 .signup .msg{width:100%;font-size:13px;color:var(--mint);margin-top:4px;display:none}
 
 footer{border-top:1px solid var(--line);padding:28px 0 44px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted);line-height:1.7}
-footer .fbrand{font-family:'Space Grotesk',sans-serif;color:var(--mint);font-weight:700;font-size:15px}
+footer .fbrand{font-family:'Inter',sans-serif;color:var(--mint);font-weight:700;font-size:15px}
 footer a{color:var(--mint-dim)}
 </style>
 </head>
@@ -169,6 +169,17 @@ footer a{color:var(--mint-dim)}
     <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
   </div>
 </header>
+
+<div class="bar">
+  <div class="tabs" role="tablist" aria-label="Market categories">
+    <button class="tab" data-cat="sports">Sports</button>
+    <button class="tab" data-cat="politics">Politics</button>
+    <button class="tab" data-cat="economy">Economy</button>
+    <button class="tab" data-cat="crypto">Crypto</button>
+    <button class="tab" data-cat="footy">Footy</button>
+  </div>
+  <span class="stamp" id="stamp"><span class="dot" id="liveDot"></span><span id="stampText">Loading prices...</span></span>
+</div>
 </div>
 
 <div class="ticker" aria-hidden="true">
@@ -202,18 +213,6 @@ footer a{color:var(--mint-dim)}
       <div class="f2-chart" id="pmChart"></div>
     </div>
   </div>
-</div>
-
-<div class="bar">
-  <div class="tabs" role="tablist" aria-label="Market categories">
-    <button class="tab on" data-cat="all">All markets</button>
-    <button class="tab" data-cat="footy">Footy</button>
-    <button class="tab" data-cat="sports">Sports</button>
-    <button class="tab" data-cat="politics">Politics</button>
-    <button class="tab" data-cat="economy">Economy</button>
-    <button class="tab" data-cat="crypto">Crypto</button>
-  </div>
-  <span class="stamp" id="stamp"><span class="dot" id="liveDot"></span><span id="stampText">Loading prices...</span></span>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -268,34 +267,27 @@ const DEMO = [
   ["footy","Brisbane Lions to win the 2026 AFL flag",15,2],
   ["footy","Carlton to win the 2026 AFL flag",8,-3],
   ["footy","Geelong to win the 2026 AFL flag",13,1],
-  ["footy","NSW to win State of Origin game three",46,1],
   ["footy","Richmond to take the AFL wooden spoon",34,5],
-  ["sports","Spain to lift the World Cup",59,8],
-  ["sports","Argentina to lift the World Cup",41,-8],
-  ["sports","Sam Burns to win The Open",35,6],
-  ["sports","Aussie Lucas Herbert to win The Open",4,2],
-  ["sports","Si Woo Kim to win The Open",14,-1],
-  ["sports","Ryan Fox to win The Open",9,3],
-  ["sports","Antonelli to win the Belgian Grand Prix",63,-1],
-  ["sports","Verstappen to win the Belgian Grand Prix",20,4],
+  ["sports","Antonelli to win the 2026 F1 drivers' title",62,9],
+  ["sports","Hamilton to win the 2026 F1 drivers' title",22,-6],
   ["sports","Mercedes to take the F1 constructors title",84,1],
   ["sports","Ferrari to take the F1 constructors title",14,-1],
   ["politics","Labor to win the next federal election",57,-3],
   ["politics","Gambling ad ban expanded before January 2027",41,5],
   ["politics","One Nation to win a House of Reps seat at the next election",22,4],
   ["politics","One Nation to top 10% of the primary vote at the next election",31,2],
-  ["politics","Leadership change in the opposition this year",22,4],
+  ["politics","Another leadership change in the opposition this year",14,-3],
   ["politics","Albanese still PM at Christmas",78,-2],
   ["politics","A federal election called this year",8,1],
   ["politics","Democrats to win the US House at the midterms",83,2],
   ["politics","Democrats to win the US Senate at the midterms",44,-1],
   ["politics","Democrats to take the White House in 2028",58,0],
-  ["economy","RBA to cut the cash rate at the next meeting",68,6],
+  ["economy","RBA to cut the cash rate at the next meeting",24,-8],
   ["economy","Inflation under 3% at the last print before Christmas",74,3],
   ["economy","Brisbane home values above Melbourne at the December print",74,2],
   ["economy","Unemployment above 4.5% at the next print",31,-1],
   ["economy","Sydney home values up year on year at the next print",71,2],
-  ["economy","Cash rate below 3% by year end",35,4],
+  ["economy","Cash rate below 3% by year end",8,-6],
   ["economy","ASX 200 to finish the year above 9,000",48,-2],
   ["economy","Wages growth to beat inflation this year",44,3],
   ["economy","Aussie dollar above 70 US cents at year end",27,-2],
@@ -355,6 +347,7 @@ function render(){
     (!query || (m.question + " " + m.category).toLowerCase().includes(query))
   );
   if (activeCat === "all") filtered = interleaveByCategory(filtered);
+  if (!query) filtered = filtered.slice(0, 16);
   filtered.forEach(m => {
     const pct = Math.round(m.probability * 100);
     const cls = m.move > 0 ? "up" : (m.move < 0 ? "dn" : "flat");
@@ -557,31 +550,31 @@ function seededSeries(seed, end, startBias, n){
 
 const FEATURED = [
   { category:"Politics", title:"Next Prime Minister of Australia",
-    rows:[{name:"Anthony Albanese", pct:47},{name:"Sussan Ley", pct:21}], more:3,
-    why:"Albanese holds the edge as sitting PM, but a tighter opposition under Ley and a live succession conversation inside Labor keep the field open.",
-    series:[{name:"Albanese", color:"#047857", end:47, bias:-8},{name:"Ley", color:"#2563EB", end:21, bias:7},{name:"Chalmers", color:"#D97706", end:12, bias:-3}] },
+    rows:[{name:"Anthony Albanese", pct:47},{name:"Angus Taylor", pct:24}], more:4,
+    why:"Albanese holds the edge as sitting PM. Angus Taylor took the Liberal leadership in February and has had the winter sittings to make his mark, with a Chalmers succession bid still the live story inside Labor. Hanson stays a long shot, but she's never fully off the board.",
+    series:[{name:"Albanese", end:47, bias:-8},{name:"Taylor", end:24, bias:-10},{name:"Chalmers", end:12, bias:-3},{name:"Hanson", end:3, bias:1}] },
   { category:"Footy", title:"2026 AFL Premiership Winner",
     rows:[{name:"Collingwood", pct:17},{name:"Brisbane Lions", pct:15}], more:16,
     why:"Collingwood's forward line has cooled through winter, letting the Lions and the Cats close the gap at the top of the market.",
-    series:[{name:"Collingwood", color:"#047857", end:17, bias:5},{name:"Lions", color:"#2563EB", end:15, bias:-4},{name:"Geelong", color:"#D97706", end:13, bias:3}] },
-  { category:"Economy", title:"Cash Rate at the December Meeting",
-    rows:[{name:"3.00%–3.25%", pct:38},{name:"3.25%–3.50%", pct:34}], more:1,
-    why:"Futures pricing has firmed toward another cut, but sticky services inflation keeps a hold live too.",
-    series:[{name:"3.00–3.25%", color:"#047857", end:38, bias:-6},{name:"3.25–3.50%", color:"#2563EB", end:34, bias:5},{name:"Above 3.50%", color:"#D97706", end:28, bias:2}] },
-  { category:"Sports", title:"2026 World Cup Winner",
-    rows:[{name:"Spain", pct:59},{name:"Argentina", pct:41}], more:0,
-    why:"Spain have gone in as favourites since the semi final and the market hasn't budged much since.",
-    series:[{name:"Spain", color:"#047857", end:59, bias:-10},{name:"Argentina", color:"#2563EB", end:41, bias:10}] },
+    series:[{name:"Collingwood", end:17, bias:5},{name:"Lions", end:15, bias:-4},{name:"Geelong", end:13, bias:3}] },
+  { category:"Economy", title:"RBA Rate Decision, 11 August Meeting",
+    rows:[{name:"Hold at 4.35%", pct:75},{name:"Cut to 4.10%", pct:20}], more:1,
+    why:"The Board held at 4.35% this month after inflation ran hot through the back half of 2025. Markets are pricing a hold as the likely call again in August.",
+    series:[{name:"Hold", end:75, bias:15},{name:"Cut 25bp", end:20, bias:-12},{name:"Other", end:5, bias:-2}] },
+  { category:"Sports", title:"2026 F1 Drivers' Championship",
+    rows:[{name:"Kimi Antonelli", pct:62},{name:"Lewis Hamilton", pct:22}], more:18,
+    why:"Antonelli's Spa result stretched his lead to 45 points over Hamilton, with 316 still on the table across the last 12 rounds.",
+    series:[{name:"Antonelli", end:62, bias:-20},{name:"Hamilton", end:22, bias:8}] },
   { category:"Crypto", title:"Bitcoin Price at Year End",
-    rows:[{name:"Under $100k", pct:46},{name:"$100k–$150k", pct:40}], more:1,
-    why:"Bitcoin has spent most of the year range bound, keeping the middle bracket the closest call on the board.",
-    series:[{name:"Under $100k", color:"#047857", end:46, bias:6},{name:"$100k–150k", color:"#2563EB", end:40, bias:-5},{name:"Above $150k", color:"#D97706", end:14, bias:-1}] }
+    rows:[{name:"Under $100k", pct:68},{name:"$100k–$150k", pct:26}], more:1,
+    why:"Bitcoin's been trading in the mid-US$60,000s through July, keeping the under-US$100k bracket the front runner with five months left on the clock.",
+    series:[{name:"Under $100k", end:68, bias:-10},{name:"$100k–150k", end:26, bias:8},{name:"Above $150k", end:6, bias:2}] }
 ];
 let featuredIndex = 0;
 
 const CHART_PALETTE = {
-  dark:  { series:["#2E6BFF","#3DFFA2","#FFB84D"], grid:"#202A42", label:"#8B93A7" },
-  light: { series:["#2E6BFF","#16A34A","#D97706"], grid:"#E2E8F0", label:"#64748B" }
+  dark:  { series:["#2E6BFF","#3DFFA2","#FFB84D","#C084FC"], grid:"#202A42", label:"#8B93A7" },
+  light: { series:["#2E6BFF","#16A34A","#D97706","#7C3AED"], grid:"#E2E8F0", label:"#64748B" }
 };
 function seriesColor(idx){ return CHART_PALETTE[currentTheme].series[idx]; }
 
@@ -637,13 +630,13 @@ function renderF2Chart(series){
   // gridlines + y labels
   [0,20,40,60,80].forEach(v => {
     svg += `<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="${pal.grid}" stroke-width="1"/>`;
-    svg += `<text x="${W-padR}" y="${y(v)-4}" text-anchor="end" font-size="10" fill="${pal.label}" font-family="Space Grotesk, sans-serif">${v}%</text>`;
+    svg += `<text x="${W-padR}" y="${y(v)-4}" text-anchor="end" font-size="10" fill="${pal.label}" font-family="Inter, sans-serif">${v}%</text>`;
   });
   // x labels
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul"];
   months.forEach((m, i) => {
     const xi = padL + (i/(months.length-1)) * (W-padL-padR);
-    svg += `<text x="${xi}" y="${H-8}" text-anchor="middle" font-size="10" fill="${pal.label}" font-family="Space Grotesk, sans-serif">${m}</text>`;
+    svg += `<text x="${xi}" y="${H-8}" text-anchor="middle" font-size="10" fill="${pal.label}" font-family="Inter, sans-serif">${m}</text>`;
   });
   // lines
   const endpoints = [];
@@ -663,7 +656,7 @@ function renderF2Chart(series){
   });
   sorted.forEach(p => {
     svg += `<circle cx="${p.cx}" cy="${endpoints.find(e=>e.name===p.name).cy}" r="4" fill="${p.color}"/>`;
-    svg += `<text x="${p.cx-10}" y="${p.cy+4}" text-anchor="end" font-size="12" font-weight="700" fill="${p.color}" font-family="Space Grotesk, sans-serif">${p.name} ${p.end}%</text>`;
+    svg += `<text x="${p.cx-10}" y="${p.cy+4}" text-anchor="end" font-size="12" font-weight="700" fill="${p.color}" font-family="Inter, sans-serif">${p.name} ${p.end}%</text>`;
   });
   svg += `</svg>`;
   el.innerHTML = svg;
