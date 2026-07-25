@@ -164,6 +164,13 @@ footer a{color:var(--mint-dim)}
   .hero{padding:36px 0 24px}
   header{padding:16px 0}
 }
+@media(max-width:480px){
+  header{flex-wrap:nowrap;gap:8px}
+  .head-right{gap:8px}
+  .search{width:92px;padding:8px 10px}
+  .subscribe-btn{padding:8px 14px;font-size:12px}
+  .logo{font-size:22px}
+}
 </style>
 </head>
 <body>
@@ -180,17 +187,6 @@ footer a{color:var(--mint-dim)}
     <button class="subscribe-btn" id="subscribeBtn">Subscribe</button>
   </div>
 </header>
-
-<div class="bar">
-  <div class="tabs" role="tablist" aria-label="Market categories">
-    <button class="tab" data-cat="sports">Sports</button>
-    <button class="tab" data-cat="politics">Politics</button>
-    <button class="tab" data-cat="economy">Economy</button>
-    <button class="tab" data-cat="crypto">Crypto</button>
-    <button class="tab" data-cat="footy">Footy</button>
-  </div>
-  <span class="stamp" id="stamp"><span class="dot" id="liveDot"></span><span id="stampText">Loading prices...</span></span>
-</div>
 </div>
 
 <div class="ticker" aria-hidden="true">
@@ -224,6 +220,17 @@ footer a{color:var(--mint-dim)}
       <div class="f2-chart" id="pmChart"></div>
     </div>
   </div>
+</div>
+
+<div class="bar">
+  <div class="tabs" role="tablist" aria-label="Market categories">
+    <button class="tab" data-cat="sports">Sports</button>
+    <button class="tab" data-cat="politics">Politics</button>
+    <button class="tab" data-cat="economy">Economy</button>
+    <button class="tab" data-cat="crypto">Crypto</button>
+    <button class="tab" data-cat="footy">Footy</button>
+  </div>
+  <span class="stamp" id="stamp"><span class="dot" id="liveDot"></span><span id="stampText">Loading prices...</span></span>
 </div>
 
 <div class="grid" id="grid"></div>
