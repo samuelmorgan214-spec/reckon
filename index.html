@@ -97,6 +97,11 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .fill{height:100%;background:var(--mint);border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
 .meta{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);line-height:1.5}
 .src{color:var(--mint-dim)}
+/* Reckon's own estimate, not a traded price. Amber so it never reads as a market number. */
+.src.est{color:#D9A441}
+.src.est::before{content:"◆ ";font-size:9px;vertical-align:1px}
+.card:has(.src.est) .pct{color:#D9A441}
+.card:has(.src.est) .fill{background:#D9A441}
 
 .vote{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:14px}
 .vote-q{font-family:'Inter',sans-serif;font-size:13px;color:var(--muted)}
@@ -339,6 +344,9 @@ const ticker = document.getElementById("ticker");
 
 function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
+// Reckon's own estimate, not a traded price. Flagged so it never reads as a market number.
+function isEstimate(m){ return /reckon estimate|editorial/i.test(m.source_label || ""); }
+
 function fmtUpdated(iso){
   if (!iso) return "";
   const d = new Date(iso);
@@ -384,7 +392,7 @@ function render(){
       '<div class="q">' + esc(m.question) + '</div>' +
       '<div class="price-row"><span class="pct">' + pct + '%</span><span class="pct-label">chance</span></div>' +
       '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>' +
-      '<div class="meta"><span class="src">' + esc(m.source_label) + '</span><span>' + fmtUpdated(m.updated_at) + '</span></div>' +
+      '<div class="meta"><span class="src' + (isEstimate(m) ? ' est' : '') + '">' + esc(m.source_label) + '</span><span>' + fmtUpdated(m.updated_at) + '</span></div>' +
       '<div class="vote" data-q="' + esc(m.question) + '" data-slug="' + esc(m.slug || "") + '">' +
         '<span class="vote-q">what do you reckon?</span>' +
         '<div class="vbtns">' +
