@@ -172,6 +172,7 @@ footer a{color:var(--mint-dim)}
   .logo{font-size:22px}
 }
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -259,6 +260,11 @@ footer a{color:var(--mint-dim)}
 </div>
 
 <script>
+// No-ops when the analytics script is blocked or absent (local dev, ad blockers).
+function track(name, data){
+  try { window.va && window.va("event", { name, ...(data || {}) }); } catch (e) {}
+}
+
 let currentTheme = localStorage.getItem("reckon_theme") || "dark";
 function applyTheme(t){
   currentTheme = t;
@@ -466,6 +472,7 @@ grid.addEventListener("click", async (e) => {
   votes[voteEl.dataset.q] = choice;
   localStorage.setItem("reckon_votes", JSON.stringify(votes));
   applyVote(voteEl);
+  track("vote", { slug: voteEl.dataset.slug || voteEl.dataset.q, choice });
   // Send it up; if the backend answers, fold the fresh tally in and re-render.
   const tally = await sendVote(voteEl.dataset.slug, choice);
   if (tally) {
@@ -492,6 +499,7 @@ document.querySelectorAll(".tab").forEach(t => {
     t.classList.add("on");
     activeCat = t.dataset.cat;
     render();
+    track("category", { category: activeCat });
   });
 });
 
@@ -528,6 +536,7 @@ document.getElementById("signupForm").addEventListener("submit", async (e) => {
     if (!r.ok) throw new Error(data.error || "failed");
     msg.textContent = "You're in. First reckoning lands this week.";
     document.getElementById("email").value = "";
+    track("signup");
   } catch (err) {
     msg.textContent = "That did not go through. Give it another crack in a minute.";
   }
