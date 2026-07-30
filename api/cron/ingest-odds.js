@@ -11,8 +11,8 @@ import { consensus } from '../../lib/devig.js';
 // Auth: Authorization: Bearer <CRON_SECRET> (Vercel cron sends this automatically).
 
 const MATCH_SPORTS = [
-  { key: 'aussierules_afl', label: 'AFL', category: 'footy' },
-  { key: 'rugbyleague_nrl', label: 'NRL', category: 'footy' },
+  { key: 'aussierules_afl', label: 'AFL', category: 'afl' },
+  { key: 'rugbyleague_nrl', label: 'NRL', category: 'nrl' },
 ];
 const REGION = 'au';
 const MAX_EVENTS_PER_SPORT = 10;

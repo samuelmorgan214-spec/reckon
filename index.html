@@ -230,11 +230,12 @@ footer a{color:var(--mint-dim)}
 
 <div class="bar">
   <div class="tabs" role="tablist" aria-label="Market categories">
+    <button class="tab" data-cat="afl">AFL</button>
+    <button class="tab" data-cat="nrl">NRL</button>
     <button class="tab" data-cat="sports">Sports</button>
     <button class="tab" data-cat="politics">Politics</button>
     <button class="tab" data-cat="economy">Economy</button>
     <button class="tab" data-cat="crypto">Crypto</button>
-    <button class="tab" data-cat="footy">Footy</button>
   </div>
   <span class="stamp" id="stamp"><span class="dot" id="liveDot"></span><span id="stampText">Loading prices...</span></span>
 </div>
@@ -288,15 +289,15 @@ document.getElementById("themeBtn").addEventListener("click", () => {
 // Demo fallback only renders when /api/prices is unreachable, and says so.
 // [category, question, percent chance, 7-day move in points]
 const DEMO = [
-  ["footy","Panthers to win the 2026 NRL premiership",24,3],
-  ["footy","Collingwood to win the 2026 AFL flag",17,-2],
-  ["footy","Storm to win the 2026 NRL premiership",18,1],
-  ["footy","Broncos to win the 2026 NRL premiership",11,-1],
-  ["footy","Raiders to win the 2026 NRL premiership",9,0],
-  ["footy","Brisbane Lions to win the 2026 AFL flag",15,2],
-  ["footy","Carlton to win the 2026 AFL flag",8,-3],
-  ["footy","Geelong to win the 2026 AFL flag",13,1],
-  ["footy","Richmond to take the AFL wooden spoon",34,5],
+  ["nrl","Panthers to win the 2026 NRL premiership",24,3],
+  ["afl","Collingwood to win the 2026 AFL flag",17,-2],
+  ["nrl","Storm to win the 2026 NRL premiership",18,1],
+  ["nrl","Broncos to win the 2026 NRL premiership",11,-1],
+  ["nrl","Raiders to win the 2026 NRL premiership",9,0],
+  ["afl","Brisbane Lions to win the 2026 AFL flag",15,2],
+  ["afl","Carlton to win the 2026 AFL flag",8,-3],
+  ["afl","Geelong to win the 2026 AFL flag",13,1],
+  ["afl","Richmond to take the AFL wooden spoon",34,5],
   ["sports","Antonelli to win the 2026 F1 drivers' title",62,9],
   ["sports","Hamilton to win the 2026 F1 drivers' title",22,-6],
   ["sports","Mercedes to take the F1 constructors title",84,1],
