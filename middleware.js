@@ -7,13 +7,10 @@
 // Set SITE_USER and SITE_PASS in Vercel to switch it on. If either is missing
 // the gate stays open, so a deploy can never lock you out by accident.
 //
-// The cron and admin endpoints are exempt: they carry their own bearer-token
-// auth and are called by GitHub Actions, which cannot answer a Basic prompt.
+// No config.matcher here on purpose: that is Next.js path-to-regexp syntax and
+// this is a plain static project, so paths are filtered inside the function.
 
-export const config = {
-  // Skip Vercel internals and the favicon so the prompt renders cleanly.
-  matcher: '/((?!_vercel|favicon.ico).*)',
-};
+export const config = { runtime: 'edge' };
 
 export default function middleware(request) {
   const user = process.env.SITE_USER;
@@ -22,9 +19,13 @@ export default function middleware(request) {
   // Not configured yet: stay open rather than risk locking the site out.
   if (!user || !pass) return;
 
-  // Machine-to-machine endpoints authenticate themselves with CRON_SECRET or
-  // ADMIN_SECRET, so the browser gate would only break them.
   const path = new URL(request.url).pathname;
+
+  // Vercel internals.
+  if (path.startsWith('/_vercel')) return;
+
+  // Machine-to-machine endpoints carry their own bearer-token auth and are
+  // called by GitHub Actions, which cannot answer a browser prompt.
   if (path.startsWith('/api/cron/') || path.startsWith('/api/admin/')) return;
 
   const header = request.headers.get('authorization') || '';
@@ -39,9 +40,9 @@ export default function middleware(request) {
     }
     const sep = decoded.indexOf(':');
     if (sep !== -1) {
-      const givenUser = decoded.slice(0, sep);
-      const givenPass = decoded.slice(sep + 1);
-      if (givenUser === user && givenPass === pass) return; // let it through
+      if (decoded.slice(0, sep) === user && decoded.slice(sep + 1) === pass) {
+        return; // credentials good, let it through
+      }
     }
   }
 
