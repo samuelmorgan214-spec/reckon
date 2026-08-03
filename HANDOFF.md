@@ -6,7 +6,7 @@ Read this plus `README.md` and you have the full picture.
 **This file contains no secrets and is safe to store anywhere.** Where a
 credential is needed, it says which console to fetch it from.
 
-Last updated: 29 July 2026.
+Last updated: 3 August 2026.
 
 ## What Reckon is
 Australian prediction-market media brand. Tagline "what do you reckon?",
@@ -111,9 +111,20 @@ GitHub Actions secret, then redeploying.
 > **Outstanding security task:** `SUPABASE_SERVICE_ROLE_KEY` was pasted into a
 > chat session on 29 July 2026 and has **not** been rotated. Rotate it in
 > Supabase -> API Keys, update Vercel, redeploy. Do this before anything else.
-> Also delete these from the old machine's Desktop if it is recoverable:
-> `RECKON KEYS.txt`, `PASTE THIS INTO SUPABASE_SERVICE_ROLE_KEY.txt`,
-> `RUN THIS IN SUPABASE.sql`, and `~/Desktop/reckon/.env`.
+>
+> The key is also sitting in plain text on **at least two machines**, because the
+> project folder was AirDropped without stripping it. Check both, in every copy
+> of the folder (Desktop, Downloads, anywhere else it landed):
+> - `<folder>/.env`
+> - `~/Desktop/RECKON KEYS.txt`
+> - `~/Desktop/PASTE THIS INTO SUPABASE_SERVICE_ROLE_KEY.txt`
+> - `~/Desktop/RUN THIS IN SUPABASE.sql`
+>
+> Find them all with:
+> `find ~ -name ".env" -path "*reckon*" 2>/dev/null; ls ~/Desktop ~/Downloads | grep -iE "RECKON KEYS|PASTE THIS|RUN THIS"`
+>
+> Rotating the key makes every one of those copies useless, which is the real
+> fix. Delete them anyway.
 
 ## Gotchas that cost time this session
 - **Vercel env var changes need a redeploy.** Saving alone does nothing.
