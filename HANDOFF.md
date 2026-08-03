@@ -69,6 +69,22 @@ so the record is permanent and auditable.
 - `GET /api/admin/betfair-find?q=premiership` — looks up Betfair market ids and
   runner names, for filling in a market's `source_config`.
 
+## The site is password protected
+As of 3 August 2026 the live site sits behind an HTTP Basic auth gate, set up in
+`middleware.js`. Visitors get a browser prompt; wrong or no credentials returns
+401 plus `noindex`, so nothing is publicly visible or searchable pre-launch.
+
+- Credentials are `SITE_USER` and `SITE_PASS` in Vercel env vars.
+- **To open the site at launch:** delete both variables in Vercel and redeploy.
+  The gate stays open whenever either is missing, by design, so a deploy cannot
+  lock the site out by accident.
+- `/api/cron/*` and `/api/admin/*` are exempt. They carry their own bearer-token
+  auth and are called by GitHub Actions, which cannot answer a browser prompt.
+  Ingests keep running normally behind the gate.
+- Note: `config.matcher` is deliberately absent from the middleware. That syntax
+  is Next.js-specific and silently no-ops on a plain static project, which is why
+  the first attempt did nothing. Paths are filtered inside the function instead.
+
 ## Current state of the board
 48 markets live: AFL 9, NRL 8, Crypto 10, Economy 10, Sports 6, Politics 5.
 
