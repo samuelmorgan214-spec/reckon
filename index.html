@@ -135,6 +135,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .f2-payout{font-size:13px;color:var(--muted)}
 .f2-odds{font-family:'Inter',sans-serif;font-weight:700;font-size:14px;border:1px solid var(--line);border-radius:99px;padding:5px 14px}
 .f2-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);padding:12px 0}
+.f2-nochart{display:flex;align-items:center;justify-content:center;height:100%;min-height:180px;padding:0 24px;text-align:center;font-size:13px;line-height:1.5;color:var(--muted)}
 .f2-meta a{color:var(--mint-dim)}
 .f2-news{font-size:13px;color:var(--muted);line-height:1.6;padding-top:10px;border-top:1px solid var(--line)}
 .f2-news b{color:var(--cream);font-weight:500}
@@ -218,7 +219,7 @@ footer a{color:var(--mint-dim)}
       <div class="f2-thead"><span>Market</span><span>Pays out</span><span>Odds</span></div>
       <div class="f2-row lead" id="f2Row1"><span class="f2-name"></span><span class="f2-payout"></span><span class="f2-odds"></span></div>
       <div class="f2-row second" id="f2Row2"><span class="f2-name"></span><span class="f2-payout"></span><span class="f2-odds"></span></div>
-      <div class="f2-meta"><span>Demo price</span><span id="f2More"></span></div>
+      <div class="f2-meta"><span id="f2Src"></span><span id="f2More"></span></div>
       <div class="f2-news" id="f2News"></div>
     </div>
     <div>
@@ -528,6 +529,15 @@ async function loadPrices(){
     document.getElementById("stampText").textContent = "Demo prices";
   }
   render();
+
+  // The carousel is built from whatever the board is showing, demo included,
+  // so the two can never disagree. History is fetched after the cards are on
+  // screen because a chart is worth less than the price above it.
+  FEATURED = buildFeatured(markets);
+  featuredIndex = 0;
+  renderFeatured(featuredIndex);
+  historyBySlug = await loadHistory(FEATURED.map(f => f.slug).filter(Boolean));
+  renderFeatured(featuredIndex);
 }
 
 document.getElementById("signupForm").addEventListener("submit", async (e) => {
@@ -567,45 +577,71 @@ document.getElementById("subscribeBtn").addEventListener("click", () => {
   }, reduce ? 0 : 700);
 });
 
-function seedFromString(str){let h=0;for(let i=0;i<str.length;i++){h=(Math.imul(31,h)+str.charCodeAt(i))|0}return h>>>0}
-function mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=(t+Math.imul(t^t>>>7,61|t))^t;return ((t^t>>>14)>>>0)/4294967296}}
-function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+// The featured carousel reads the live board.
+//
+// It used to be a hand written array of five cards sitting above 48 real
+// markets, so it drifted from the prices underneath it, and its charts came
+// out of a seeded random walk rather than the record. Both are gone.
+//
+// A market here is one question with one price, so a card shows Yes against
+// No. Runner tables (a premiership field with every team priced) need the
+// grouped Betfair outrights, which are not ingesting yet.
 
-function seededSeries(seed, end, startBias, n){
-  const rand = mulberry32(seedFromString(seed));
-  const start = clamp(end + startBias, 1, 85);
-  const pts = [start];
-  for(let i=1;i<n-1;i++){
-    const t = i/(n-1);
-    const base = start + (end-start)*t;
-    pts.push(clamp(base + (rand()-0.5)*5, 1, 85));
-  }
-  pts.push(end);
-  return pts;
+const FEATURED_COUNT = 5;
+let FEATURED = [];
+let historyBySlug = {};
+
+const CAT_LABEL = {
+  afl:"AFL", nrl:"NRL", sports:"Sports",
+  politics:"Politics", economy:"Economy", crypto:"Crypto", culture:"Culture"
+};
+
+function moveLine(m){
+  if (!m.move) return "Steady over the past week.";
+  const n = Math.abs(m.move);
+  return (m.move > 0 ? "Up " : "Down ") + n + (n === 1 ? " point" : " points") + " in the past week.";
 }
 
-const FEATURED = [
-  { category:"Politics", title:"Next Prime Minister of Australia",
-    rows:[{name:"Anthony Albanese", pct:47},{name:"Angus Taylor", pct:24}], more:4,
-    why:"Albanese holds the edge as sitting PM. Angus Taylor took the Liberal leadership in February and has had the winter sittings to make his mark, with a Chalmers succession bid still the live story inside Labor. Hanson stays a long shot, but she's never fully off the board.",
-    series:[{name:"Albanese", end:47, bias:-8},{name:"Taylor", end:24, bias:-10},{name:"Chalmers", end:12, bias:-3},{name:"Hanson", end:3, bias:1}] },
-  { category:"Footy", title:"2026 AFL Premiership Winner",
-    rows:[{name:"Collingwood", pct:17},{name:"Brisbane Lions", pct:15}], more:16,
-    why:"Collingwood's forward line has cooled through winter, letting the Lions and the Cats close the gap at the top of the market.",
-    series:[{name:"Collingwood", end:17, bias:5},{name:"Lions", end:15, bias:-4},{name:"Geelong", end:13, bias:3}] },
-  { category:"Economy", title:"RBA Rate Decision, August Meeting",
-    rows:[{name:"Hold at 4.35%", pct:62},{name:"Hike to 4.60%", pct:34}], more:1,
-    why:"The Board has lifted the cash rate three times this year to 4.35% on the energy shock, and still holds a tightening bias. The June CPI print is the swing factor for whether August brings a fourth hike.",
-    series:[{name:"Hold", end:62, bias:20},{name:"Hike 25bp", end:34, bias:-18},{name:"Cut", end:4, bias:-3}] },
-  { category:"Sports", title:"2026 F1 Drivers' Championship",
-    rows:[{name:"Kimi Antonelli", pct:62},{name:"Lewis Hamilton", pct:22}], more:18,
-    why:"Antonelli's Spa result stretched his lead to 45 points over Hamilton, with 316 still on the table across the last 12 rounds.",
-    series:[{name:"Antonelli", end:62, bias:-20},{name:"Hamilton", end:22, bias:8}] },
-  { category:"Crypto", title:"Bitcoin Price at Year End",
-    rows:[{name:"Under $100k", pct:85},{name:"$100k–$150k", pct:10}], more:1,
-    why:"Kalshi has Bitcoin topping US$100k this year at just 15%, and US$150k at 5%, keeping the under-US$100k bracket a heavy favourite with five months left on the clock.",
-    series:[{name:"Under $100k", end:85, bias:-12},{name:"$100k–150k", end:10, bias:9},{name:"Above $150k", end:5, bias:3}] }
-];
+function sourceLine(m){
+  return m.source_label + (m.contributing_books ? ", " + m.contributing_books + " books" : "");
+}
+
+// Biggest movers first, which is the honest answer to "what should I look at".
+// Ties and flat weeks still fill the carousel, they just sit at the back.
+function buildFeatured(all){
+  return all.slice()
+    .sort((a, b) => Math.abs(b.move) - Math.abs(a.move))
+    .slice(0, FEATURED_COUNT)
+    .map(m => {
+      const pct = Math.round(m.probability * 100);
+      // fmtUpdated already carries its own "updated" and comes back empty on
+      // the demo feed, which has no timestamps.
+      const stamp = fmtUpdated(m.updated_at);
+      return {
+        slug: m.slug,
+        category: CAT_LABEL[m.category] || m.category,
+        title: m.question,
+        rows: [{ name:"Yes", pct }, { name:"No", pct: 100 - pct }],
+        more: all.filter(x => x.category === m.category && x.question !== m.question).length,
+        source: sourceLine(m),
+        why: moveLine(m) + " " + sourceLine(m) + (stamp ? ", " + stamp : "") + ".",
+        pct
+      };
+    });
+}
+
+// Charts are optional. If history has not been captured yet the card renders
+// without one rather than drawing a line nobody measured.
+async function loadHistory(slugs){
+  if (!slugs.length) return {};
+  try {
+    const r = await fetch("/api/history?slugs=" + encodeURIComponent(slugs.join(",")));
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return (await r.json()).history || {};
+  } catch {
+    return {};
+  }
+}
 let featuredIndex = 0;
 
 const CHART_PALETTE = {
@@ -614,10 +650,13 @@ const CHART_PALETTE = {
 };
 function seriesColor(idx){ return CHART_PALETTE[currentTheme].series[idx]; }
 
-function payoutFor(pct){ return (100/pct).toFixed(2) + "x"; }
+// A market can round to 0 or 100 when it is all but settled, and a payout of
+// Infinity helps nobody.
+function payoutFor(pct){ return pct > 0 ? (100/pct).toFixed(2) + "x" : "--"; }
 
 function renderFeatured(i){
   const f = FEATURED[i];
+  if (!f) return; // nothing loaded yet
   document.getElementById("f2Cat").innerHTML = `<span class="dot"></span> ${f.category}`;
   document.getElementById("f2Title").textContent = f.title;
   document.getElementById("f2Count").textContent = (i+1) + " of " + FEATURED.length;
@@ -634,13 +673,16 @@ function renderFeatured(i){
     odds.style.color = color;
   });
 
-  document.getElementById("f2More").textContent = f.more > 0 ? f.more + " more" : "";
-  document.getElementById("f2News").innerHTML = `<b>Why it moved.</b> ${f.why}`;
-  document.getElementById("f2Legend").innerHTML = f.series.map((s,idx) =>
-    `<span><i style="background:${seriesColor(idx)}"></i>${s.name}<b>${s.end}%</b></span>`
-  ).join("");
+  document.getElementById("f2Src").textContent = f.source;
+  document.getElementById("f2More").textContent = f.more > 0 ? f.more + " more in " + f.category : "";
+  // Plain text, not a hand written "why it moved" line. The old copy was
+  // editorial prose that nobody updated, which is how the carousel drifted.
+  document.getElementById("f2News").textContent = f.why;
 
-  renderF2Chart(f.series);
+  document.getElementById("f2Legend").innerHTML =
+    `<span><i style="background:${seriesColor(0)}"></i>Yes<b>${f.pct}%</b></span>`;
+
+  renderF2Chart(historyBySlug[f.slug] || []);
 }
 
 document.getElementById("f2Prev").addEventListener("click", () => {
@@ -652,48 +694,49 @@ document.getElementById("f2Next").addEventListener("click", () => {
   renderFeatured(featuredIndex);
 });
 
-function renderF2Chart(series){
+// One market, one line, drawn from what was actually captured.
+//
+// points is [{t, p}] straight off /api/history. A market that has not been
+// tracked long enough to have two readings gets no chart at all, which is the
+// honest outcome. It used to get a plausible looking invented one.
+function renderF2Chart(points){
   const el = document.getElementById("pmChart");
   if (!el) return;
-  const n = 26;
+
+  if (!points || points.length < 2) {
+    el.innerHTML = `<div class="f2-nochart">Not enough history yet. The chart appears once this market has been tracked for a few days.</div>`;
+    return;
+  }
+
   const W = 600, H = 260, padL = 8, padR = 8, padT = 14, padB = 26;
-  const yMax = 80;
+  const n = points.length;
+  const yMax = 100;
   const x = i => padL + (i/(n-1)) * (W-padL-padR);
   const y = v => (H-padB) - (v/yMax) * (H-padT-padB);
 
   const pal = CHART_PALETTE[currentTheme];
+  const color = seriesColor(0);
   let svg = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
-  // gridlines + y labels
-  [0,20,40,60,80].forEach(v => {
+
+  [0,25,50,75,100].forEach(v => {
     svg += `<line x1="${padL}" y1="${y(v)}" x2="${W-padR}" y2="${y(v)}" stroke="${pal.grid}" stroke-width="1"/>`;
     svg += `<text x="${W-padR}" y="${y(v)-4}" text-anchor="end" font-size="10" fill="${pal.label}" font-family="Inter, sans-serif">${v}%</text>`;
   });
-  // x labels
-  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul"];
-  months.forEach((m, i) => {
-    const xi = padL + (i/(months.length-1)) * (W-padL-padR);
-    svg += `<text x="${xi}" y="${H-8}" text-anchor="middle" font-size="10" fill="${pal.label}" font-family="Inter, sans-serif">${m}</text>`;
+
+  // Real dates off the readings, so the axis matches the window the data
+  // actually covers rather than a fixed Jan to Jul.
+  const fmtDay = t => new Date(t).toLocaleDateString("en-AU", { day:"numeric", month:"short" });
+  [0, Math.floor((n-1)/2), n-1].forEach(i => {
+    svg += `<text x="${x(i)}" y="${H-8}" text-anchor="${i===0?"start":i===n-1?"end":"middle"}" font-size="10" fill="${pal.label}" font-family="Inter, sans-serif">${fmtDay(points[i].t)}</text>`;
   });
-  // lines
-  const endpoints = [];
-  series.forEach((s, idx) => {
-    const color = seriesColor(idx);
-    const pts = seededSeries(s.name, s.end, s.bias, n);
-    const path = pts.map((v,i) => (i===0?"M":"L") + x(i).toFixed(1) + "," + y(v).toFixed(1)).join(" ");
-    svg += `<path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
-    endpoints.push({ name:s.name, color, cx:x(n-1), cy:y(s.end), end:s.end });
-  });
-  // "today" marker line
-  svg += `<line x1="${x(n-1)}" y1="${padT}" x2="${x(n-1)}" y2="${H-padB}" stroke="${pal.grid}" stroke-width="1" stroke-dasharray="3,3"/>`;
-  // endpoint dots + labels, nudged apart if values sit close together
-  const sorted = endpoints.slice().sort((a,b) => b.end - a.end);
-  sorted.forEach((p, i) => {
-    if (i > 0 && sorted[i-1].cy - p.cy < 16) p.cy = sorted[i-1].cy + 16;
-  });
-  sorted.forEach(p => {
-    svg += `<circle cx="${p.cx}" cy="${endpoints.find(e=>e.name===p.name).cy}" r="4" fill="${p.color}"/>`;
-    svg += `<text x="${p.cx-10}" y="${p.cy+4}" text-anchor="end" font-size="12" font-weight="700" fill="${p.color}" font-family="Inter, sans-serif">${p.name} ${p.end}%</text>`;
-  });
+
+  const path = points.map((pt,i) => (i===0?"M":"L") + x(i).toFixed(1) + "," + y(pt.p).toFixed(1)).join(" ");
+  svg += `<path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  const last = points[n-1];
+  svg += `<circle cx="${x(n-1)}" cy="${y(last.p)}" r="4" fill="${color}"/>`;
+  svg += `<text x="${x(n-1)-10}" y="${y(last.p)+4}" text-anchor="end" font-size="12" font-weight="700" fill="${color}" font-family="Inter, sans-serif">${last.p}%</text>`;
+
   svg += `</svg>`;
   el.innerHTML = svg;
 }
