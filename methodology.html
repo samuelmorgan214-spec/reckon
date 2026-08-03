@@ -8,68 +8,160 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --forest:#071A12; --surface:#0C2318; --surface2:#11301F;
-  --mint:#3DFFA2; --mint-dim:#1E7A50; --cream:#EDF5EF;
-  --muted:#7FA08C; --line:#1A3A28;
+:root, [data-theme="dark"]{
+  --forest:#0A0E1A; --surface:#10141F; --surface2:#1A2035;
+  --mint:#2E6BFF; --mint-dim:#1E3A8A; --cream:#F1F5F9;
+  --muted:#8B93A7; --up:#3DFFA2; --down:#EF4444;
+  --line:#202A42; --on-accent:#FFFFFF;
   color-scheme: dark;
 }
+[data-theme="light"]{
+  --forest:#FFFFFF; --surface:#FFFFFF; --surface2:#F1F5F9;
+  --mint:#2E6BFF; --mint-dim:#1D4ED8; --cream:#0F172A;
+  --muted:#64748B; --up:#16A34A; --down:#DC2626;
+  --line:#E2E8F0; --on-accent:#FFFFFF;
+  color-scheme: light;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;transition:background .15s,color .15s}
+a{color:inherit}
 .wrap{max-width:760px;margin:0 auto;padding:0 20px}
-header{padding:22px 0;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px;color:var(--mint);text-decoration:none}
+
+header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+.brand-group{display:flex;align-items:baseline;gap:14px}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.5px;color:var(--mint);text-decoration:none}
 .tagline{font-size:13px;color:var(--muted)}
-h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);letter-spacing:-1.2px;line-height:1.08;margin:44px 0 14px}
-.lede{color:var(--muted);font-size:17px;line-height:1.65;margin-bottom:36px}
-h2{font-family:'Space Grotesk',sans-serif;font-size:21px;letter-spacing:-0.4px;margin:38px 0 10px;color:var(--mint)}
+.head-right{display:flex;align-items:center;gap:14px}
+.back-link{font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--mint-dim);text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-link:hover{color:var(--mint)}
+.theme-btn{width:34px;height:34px;border-radius:99px;border:1px solid var(--line);background:var(--surface2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.theme-btn:hover{border-color:var(--mint-dim)}
+.theme-btn:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
+@media(max-width:560px){.tagline{display:none}}
+
+.eyebrow{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mint-dim);margin-top:44px}
+h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,5vw,44px);letter-spacing:-1.2px;line-height:1.08;margin:10px 0 14px}
+.lede{color:var(--muted);font-size:17px;line-height:1.65;margin-bottom:20px}
+
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:44px}
+nav.toc a{font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:7px 14px;text-decoration:none;transition:all .15s}
+nav.toc a:hover{border-color:var(--mint-dim);color:var(--cream)}
+
+section{scroll-margin-top:24px;padding-bottom:8px}
+h2{font-family:'Space Grotesk',sans-serif;font-size:21px;letter-spacing:-0.4px;margin:40px 0 10px;color:var(--mint)}
 p{font-size:15px;line-height:1.7;color:var(--cream);margin-bottom:14px}
 p.dim{color:var(--muted)}
 code{font-family:ui-monospace,monospace;font-size:13px;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--mint)}
 .example{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14px;color:var(--muted);line-height:1.7;margin:14px 0}
 .example b{color:var(--cream);font-weight:500}
-footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 44px;font-size:12px;color:var(--muted);line-height:1.7}
+
+footer{border-top:1px solid var(--line);margin-top:56px;padding:28px 0 44px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted);line-height:1.7}
+footer .fbrand{font-family:'Space Grotesk',sans-serif;color:var(--mint);font-weight:700;font-size:15px;margin-bottom:4px}
 footer a{color:var(--mint-dim)}
+footer .helpline{max-width:420px}
+
+@media(max-width:600px){
+  header{padding:16px 0}
+  .theme-btn{width:40px;height:40px;font-size:17px}
+  .eyebrow{margin-top:32px}
+  h1{margin:8px 0 12px}
+  nav.toc{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 -20px 36px;padding:0 20px 4px}
+  nav.toc::-webkit-scrollbar{display:none}
+  nav.toc a{flex-shrink:0}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <a class="logo" href="/">reckon</a>
-  <div class="tagline">how our numbers work</div>
+  <div class="brand-group">
+    <a class="logo" href="/">reckon</a>
+    <div class="tagline">how our numbers work</div>
+  </div>
+  <div class="head-right">
+    <a class="back-link" href="/">&larr; Back to markets</a>
+    <button class="theme-btn" id="themeBtn" aria-label="Switch theme">☀️</button>
+  </div>
 </header>
 
+<div class="eyebrow">Methodology</div>
 <h1>Where the numbers come from, and what we do to them.</h1>
 <p class="lede">Every price on Reckon is sourced, adjusted and timestamped. Here is the whole method. It fits on one page because there are no tricks in it.</p>
 
+<nav class="toc" aria-label="Jump to section">
+  <a href="#sources">Sources</a>
+  <a href="#implied">Odds to probability</a>
+  <a href="#margin">Removing the margin</a>
+  <a href="#consensus">One number from many bookies</a>
+  <a href="#exchanges">Exchanges and futures</a>
+  <a href="#attribution">Attribution</a>
+  <a href="#record">Track record</a>
+</nav>
+
+<section id="sources">
 <h2>Where prices come from</h2>
 <p>Reckon reads prices from markets where people put real money behind their opinions. Right now that means Australian bookmakers (via an aggregated odds feed) and the ASX 30 Day Interbank Cash Rate Futures market for RBA questions. Exchange prices from Betfair and regulated overseas prediction markets are coming next.</p>
 <p class="dim">We never make up a number. If a card has no market behind it, it says so on the card.</p>
+</section>
 
+<section id="implied">
 <h2>From odds to probability</h2>
 <p>Decimal odds convert straight to an implied chance. The maths is one division: a price of <code>$4.00</code> implies <code>1 / 4.00 = 25%</code>.</p>
+</section>
 
+<section id="margin">
 <h2>Removing the bookie's margin</h2>
 <p>Add up a bookmaker's implied chances across every outcome of one market and you get more than 100%. That extra is the bookmaker's margin, the cut built into the prices. Quote raw implied chances and every number is inflated.</p>
 <p>Reckon always removes it. We divide each outcome's raw chance by the market's total, so the adjusted chances sum to exactly 100%.</p>
 <div class="example"><b>Example.</b> A bookie prices a game at $1.80 and $2.10. Raw implied chances are 55.6% and 47.6%, which sum to 103.2%. After adjustment: 53.9% and 46.1%. Those are the numbers we show.</div>
+</section>
 
+<section id="consensus">
 <h2>One number from many bookies</h2>
 <p>When several bookmakers price the same market, we adjust each bookmaker's prices separately, then take the median for each outcome. The median beats the average because one bookie with a weird price cannot drag the number around.</p>
 <p class="dim">Cards show how many bookmakers went into the number, like "Consensus of 8 AU bookmakers, margin-adjusted".</p>
+</section>
 
+<section id="exchanges">
 <h2>Exchanges and futures</h2>
 <p>Exchange prices (like Betfair) come from people betting against each other, so there is no bookmaker margin to remove. Futures-implied figures (like the ASX RBA tracker) are published probabilities from traded interest rate contracts. Both are quoted as-is with their source named.</p>
+</section>
 
+<section id="attribution">
 <h2>Attribution, always</h2>
 <p>Every price on Reckon carries its source and the time it was last updated. That includes the cards we post on social. If you ever see a Reckon number without a source on it, it is not ours.</p>
+</section>
 
+<section id="record">
 <h2>Our track record</h2>
 <p>We snapshot every market's price on a schedule and record the outcome when events resolve. That log is permanent. Once enough markets have resolved we will publish the full calibration record: how often things we priced at 70% actually happened. Until the data can prove a claim, we will not make it.</p>
+</section>
 
 <footer>
-  Reckon is an information and media product. Prices shown reflect external prediction markets and published odds, not markets operated by Reckon. Nothing here is financial advice or an inducement to gamble. If gambling is a problem for you or someone you know, call the National Gambling Helpline on 1800 858 858. <a href="/">Back to the board</a>
+  <div>
+    <div class="fbrand">reckon</div>
+    <div>Information only. <a href="/">Back to the board</a></div>
+  </div>
+  <div class="helpline">
+    Reckon is an information and media product. Prices shown reflect external prediction markets and published odds, not markets operated by Reckon. Nothing here is financial advice or an inducement to gamble. If gambling is a problem for you or someone you know, call the National Gambling Helpline on <b style="color:var(--cream)">1800 858 858</b>.
+  </div>
 </footer>
 </div>
+
+<script>
+let currentTheme = localStorage.getItem("reckon_theme") || "dark";
+function applyTheme(t){
+  currentTheme = t;
+  document.documentElement.setAttribute("data-theme", t);
+  const btn = document.getElementById("themeBtn");
+  btn.textContent = t === "dark" ? "☀️" : "🌙";
+  btn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
+  localStorage.setItem("reckon_theme", t);
+}
+applyTheme(currentTheme);
+document.getElementById("themeBtn").addEventListener("click", () => {
+  applyTheme(currentTheme === "dark" ? "light" : "dark");
+});
+</script>
 </body>
 </html>

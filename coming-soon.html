@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reckon — what the markets say</title>
+<meta name="description" content="Reckon tracks what betting and prediction markets imply about the questions Australians argue about. Footy, politics, the economy, property, tech.">
+<link rel="icon" href="reckon_avatar_square_320.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#071A12;
+  --surface:#0C2318;
+  --surface2:#11301F;
+  --mint:#3DFFA2;
+  --mint-dim:#1E7A50;
+  --cream:#EDF5EF;
+  --muted:#7FA08C;
+  --down:#FF7A6B;
+  --line:#1A3A28;
+  color-scheme: dark;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+
+header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+.brand-group{display:flex;align-items:baseline;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.5px;color:var(--mint)}
+.tagline{font-size:13px;color:var(--muted);letter-spacing:0.04em}
+.preview-tag{font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--mint-dim);border:1px solid var(--line);padding:5px 12px;border-radius:99px}
+@media(max-width:600px){.tagline{display:none}}
+
+.hero{padding:64px 0 20px}
+.hero h1{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,5.8vw,56px);line-height:1.05;letter-spacing:-1.5px;max-width:760px}
+.hero h1 span{color:var(--mint)}
+.hero p{margin-top:16px;color:var(--muted);font-size:17px;max-width:560px;line-height:1.65}
+
+.peek{margin:34px 0 10px;border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden}
+.peek-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 22px;border-bottom:1px solid var(--line);font-family:'Space Grotesk',sans-serif}
+.peek-row:last-child{border-bottom:none}
+.peek-row .q{font-size:15px}
+.peek-row .p{font-size:20px;font-weight:700;color:var(--mint)}
+
+section{padding:52px 0}
+.section-head{margin-bottom:28px}
+.eyebrow{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mint-dim);margin-bottom:8px}
+.section-head h2{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(24px,3.5vw,32px);letter-spacing:-0.7px}
+.section-head p{color:var(--muted);font-size:15px;margin-top:8px;max-width:520px;line-height:1.6}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.step{border:1px solid var(--line);border-radius:16px;padding:22px;background:var(--surface)}
+.step .n{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:var(--mint);margin-bottom:10px}
+.step h3{font-family:'Space Grotesk',sans-serif;font-size:17px;margin-bottom:6px}
+.step p{color:var(--muted);font-size:14px;line-height:1.55}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tab{background:none;border:1px solid var(--line);color:var(--muted);font-family:'Space Grotesk',sans-serif;font-size:14px;padding:8px 16px;border-radius:99px;cursor:pointer;transition:all .15s}
+.tab:hover{border-color:var(--mint-dim);color:var(--cream)}
+.tab.on{background:var(--mint);border-color:var(--mint);color:var(--forest);font-weight:700}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;transition:border-color .15s;display:block}
+.card:hover{border-color:var(--mint-dim)}
+.card .cat{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+.card .q{font-family:'Space Grotesk',sans-serif;font-weight:500;font-size:17px;line-height:1.3;letter-spacing:-0.3px;margin:12px 0 16px;min-height:44px}
+.card .price-row{display:flex;align-items:baseline;justify-content:space-between}
+.card .pct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:36px;letter-spacing:-1.5px;color:var(--mint)}
+.card .pct-label{font-size:12px;color:var(--muted);margin-left:4px}
+.card .move{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:500}
+.card .move.up{color:var(--mint)}
+.card .move.dn{color:var(--down)}
+
+.about{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:32px}
+.about p{color:var(--muted);font-size:16px;line-height:1.7;max-width:640px}
+.about p+p{margin-top:14px}
+.about b{color:var(--cream);font-weight:500}
+
+.signup{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.signup h2{font-family:'Space Grotesk',sans-serif;font-size:22px;letter-spacing:-0.5px}
+.signup p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;max-width:420px}
+.signup form{display:flex;gap:10px;flex-wrap:wrap}
+.signup input{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:14px;padding:12px 18px;min-width:230px}
+.signup input:focus{outline:none;border-color:var(--mint-dim)}
+.signup button{background:var(--mint);border:none;color:var(--forest);font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;padding:12px 22px;border-radius:99px;cursor:pointer;white-space:nowrap}
+.signup button:hover{opacity:.9}
+.signup button:disabled{opacity:.6;cursor:default}
+.signup .msg{width:100%;font-size:13px;color:var(--mint);margin-top:4px;display:none}
+.signup .msg.err{color:var(--down)}
+
+footer{border-top:1px solid var(--line);padding:28px 0 44px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:12px;color:var(--muted);line-height:1.7}
+footer .fbrand{font-family:'Space Grotesk',sans-serif;color:var(--mint);font-weight:700;font-size:15px;margin-bottom:4px}
+footer .helpline{max-width:420px}
+
+/* detail view */
+#detail{display:none}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--mint-dim);font-family:'Space Grotesk',sans-serif;font-size:14px;margin:28px 0 20px}
+.back:hover{color:var(--mint)}
+.dcat{font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:'Space Grotesk',sans-serif}
+.dq{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,4vw,38px);letter-spacing:-1px;margin:10px 0 22px;max-width:720px}
+.dstat{display:flex;align-items:baseline;gap:16px;margin-bottom:26px}
+.dpct{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:64px;letter-spacing:-2px;color:var(--mint)}
+.dpct-label{font-size:14px;color:var(--muted);margin-left:6px}
+.dmove{font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500}
+.dmove.up{color:var(--mint)}
+.dmove.dn{color:var(--down)}
+.chartbox{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:20px;margin-bottom:26px}
+.chartbox svg{display:block;width:100%;height:auto}
+.dblock{border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:22px;margin-bottom:16px}
+.dblock h3{font-family:'Space Grotesk',sans-serif;font-size:14px;letter-spacing:0.04em;color:var(--mint-dim);text-transform:uppercase;margin-bottom:10px}
+.dblock p{color:var(--cream);font-size:15px;line-height:1.6}
+.dblock ul{list-style:none;color:var(--muted);font-size:14px;line-height:1.9}
+.dblock ul li::before{content:"\2014  "}
+.drow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.drow{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap" style="display:flex;align-items:center;justify-content:space-between;width:100%">
+    <div class="brand-group">
+      <a href="#/" class="logo">reckon</a>
+      <span class="tagline">what do you reckon?</span>
+    </div>
+    <span class="preview-tag">Preview build</span>
+  </div>
+</header>
+
+<main id="home">
+  <div class="wrap">
+
+    <div class="hero">
+      <h1>The polls and news say one thing.<br>The <span>markets</span> say another.</h1>
+      <p>Reckon tracks what people with skin in the game believe about the questions Australians actually argue about. Footy, politics, the economy, property, tech. Not polls, not pundits. The price of being right, updated from live markets.</p>
+    </div>
+
+    <div class="peek">
+      <div class="peek-row"><span class="q">RBA to cut rates in August</span><span class="p">68%</span></div>
+      <div class="peek-row"><span class="q">Labor to win the next election</span><span class="p">54%</span></div>
+      <div class="peek-row"><span class="q">Penrith to win the Premiership</span><span class="p">39%</span></div>
+    </div>
+
+    <section>
+      <div class="section-head">
+        <div class="eyebrow">How it works</div>
+        <h2>Three steps, no jargon</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">01</div><h3>Browse markets</h3><p>Every question Reckon tracks, sorted by category, updated as the picture changes.</p></div>
+        <div class="step"><div class="n">02</div><h3>See live probabilities</h3><p>One number per question. The market's best guess, no spin attached.</p></div>
+        <div class="step"><div class="n">03</div><h3>Understand why they're moving</h3><p>Every market page shows what shifted the price and where the number comes from.</p></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div class="eyebrow">Example markets</div>
+        <h2>What's on the board</h2>
+        <p>A preview of the markets Reckon will track at launch. Click into any of them.</p>
+      </div>
+      <div class="tabs" id="tabs"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section>
+      <div class="about">
+        <p><b>Reckon is building Australia's home for prediction markets.</b> What people with skin in the game are saying, not what the polls or the pundits say. One number per question, sourced and shown plainly.</p>
+        <p>No accounts, no bets placed on Reckon itself. It's an information and media product. Prices shown will reflect external prediction markets and published odds, not markets operated by Reckon. Nothing here is financial advice or an inducement to gamble.</p>
+      </div>
+    </section>
+
+    <section style="padding-top:0">
+      <div class="signup">
+        <div>
+          <h2>Get early access when Reckon launches.</h2>
+          <p>No spam. One email the day the real board goes live, then the weekly reckoning after that: the biggest market moves and the numbers behind the arguments.</p>
+        </div>
+        <div style="width:100%">
+          <form id="subForm">
+            <input type="email" id="email" placeholder="you@example.com" required>
+            <button type="submit" id="subBtn">Get early access</button>
+          </form>
+          <p class="msg" id="msg"></p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<main id="detail">
+  <div class="wrap">
+    <a href="#/" class="back">&larr; Back to markets</a>
+    <div class="dcat" id="d-cat"></div>
+    <h1 class="dq" id="d-q"></h1>
+    <div class="dstat">
+      <div class="dpct" id="d-pct"></div><span class="dpct-label">chance</span>
+      <div class="dmove" id="d-move"></div>
+    </div>
+    <div class="chartbox" id="d-chart"></div>
+    <div class="drow">
+      <div class="dblock"><h3>Why it moved</h3><p id="d-why"></p></div>
+      <div class="dblock"><h3>Sources</h3><ul id="d-sources"></ul></div>
+    </div>
+    <div class="dblock"><h3>Related coverage</h3><ul id="d-news"></ul></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;width:100%">
+    <div>
+      <div class="fbrand">reckon</div>
+      <div>What people with skin in the game are saying.<br>Made in Australia. Preview build, markets shown are illustrative, not live prices.</div>
+    </div>
+    <div class="helpline">
+      Reckon is an information and media product. Prices shown reflect external prediction markets and published odds, not markets operated by Reckon. Nothing here is financial advice or an inducement to gamble. If gambling is a problem for you or someone you know, call the National Gambling Helpline on <b style="color:var(--cream)">1800 858 858</b>.
+    </div>
+  </div>
+</footer>
+
+<script>
+const CATEGORIES = ['Economy','Politics','Property','Sport','Technology'];
+
+const NEWS_LINES = [
+  "Analysts have flagged this as one of the tighter calls on the board.",
+  "Coverage has picked up as the print date gets closer.",
+  "This one has moved more than most over the past fortnight.",
+  "Search interest in this question has been climbing.",
+  "It's become a common one in the group chats.",
+  "Commentators are split roughly down the middle on this."
+];
+
+const MARKETS = [
+  {slug:'rba-cut-august', category:'Economy', q:'RBA to cut rates in August', prob:68, delta:4,
+    why:"Futures pricing firmed after last month's soft jobs print left more room for a cut.",
+    sources:["ASX rate tracker, futures implied","Reckon editorial estimate"]},
+  {slug:'inflation-under-3-christmas', category:'Economy', q:'Inflation under 3% at the last print before Christmas', prob:54, delta:-3,
+    why:"Trimmed mean CPI has cooled for two straight quarters, though services inflation is still sticky.",
+    sources:["ABS quarterly CPI","Reckon editorial estimate"]},
+  {slug:'unemployment-above-45', category:'Economy', q:'Unemployment above 4.5% at the next print', prob:31, delta:6,
+    why:"Hiring intentions surveys have softened across retail and construction.",
+    sources:["ABS labour force survey","Reckon editorial estimate"]},
+  {slug:'asx200-9000-eoy', category:'Economy', q:'ASX 200 to close the year above 9,000', prob:62, delta:2,
+    why:"Bank and miner earnings have both beaten expectations this reporting season.",
+    sources:["ASX 200 index","Reckon editorial estimate"]},
+  {slug:'aud-70c-eoy', category:'Economy', q:'Aussie dollar above 70 US cents at year end', prob:44, delta:-5,
+    why:"A stronger US dollar has capped gains despite firm iron ore prices.",
+    sources:["AUD/USD spot","Reckon editorial estimate"]},
+
+  {slug:'labor-win-next-election', category:'Politics', q:'Labor to win the next federal election', prob:54, delta:-2,
+    why:"The primary vote has narrowed slightly since the last quarterly poll aggregate.",
+    sources:["Poll aggregation","Reckon editorial estimate"]},
+  {slug:'albanese-pm-christmas', category:'Politics', q:'Albanese still PM at Christmas', prob:81, delta:1,
+    why:"No serious leadership challenge has materialised inside caucus.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'early-election-2026', category:'Politics', q:'A federal election called this year', prob:12, delta:0,
+    why:"No structural trigger on the horizon, the government holds a workable majority.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'one-nation-house-seat', category:'Politics', q:'One Nation to win a House of Reps seat', prob:22, delta:3,
+    why:"Preference flows in a handful of regional seats have tightened.",
+    sources:["AEC seat modelling","Reckon editorial estimate"]},
+  {slug:'opposition-leadership-change', category:'Politics', q:'Leadership change in the opposition this year', prob:28, delta:5,
+    why:"Party room speculation has picked up after a run of soft published polling.",
+    sources:["Reckon editorial estimate"]},
+
+  {slug:'sydney-prices-up-yoy', category:'Property', q:'Sydney home values up year on year', prob:71, delta:3,
+    why:"Auction clearance rates have held above 65% for six straight weeks.",
+    sources:["CoreLogic monthly index"]},
+  {slug:'brisbane-over-melbourne', category:'Property', q:'Brisbane median above Melbourne by December', prob:58, delta:7,
+    why:"Interstate migration keeps pushing Brisbane demand ahead of a soft Melbourne market.",
+    sources:["CoreLogic monthly index"]},
+  {slug:'melbourne-prices-fall', category:'Property', q:'Melbourne prices to fall further this quarter', prob:33, delta:-4,
+    why:"Listings have thinned out after two quarters of steady declines.",
+    sources:["CoreLogic monthly index"]},
+  {slug:'fhb-scheme-expanded', category:'Property', q:'First home buyer scheme expanded this year', prob:46, delta:8,
+    why:"Budget pressure and an affordability push have both lifted the odds of an expansion.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'perth-record-eoy', category:'Property', q:'Perth median to hit a new record by year end', prob:64, delta:2,
+    why:"Perth remains the tightest rental and sales market of any capital.",
+    sources:["CoreLogic monthly index"]},
+
+  {slug:'panthers-nrl-2026', category:'Sport', q:'Panthers to win the 2026 NRL premiership', prob:39, delta:3,
+    why:"Bookmaker consensus firmed after a dominant run through the back half of the season.",
+    sources:["Bookmaker consensus, 6 books"]},
+  {slug:'collingwood-afl-2026', category:'Sport', q:'Collingwood to win the 2026 AFL flag', prob:17, delta:-2,
+    why:"A run of injuries to the forward line has softened market confidence.",
+    sources:["Bookmaker consensus, 6 books"]},
+  {slug:'storm-nrl-2026', category:'Sport', q:'Storm to win the 2026 NRL premiership', prob:18, delta:1,
+    why:"Consistent form has kept Melbourne inside the top four all season.",
+    sources:["Bookmaker consensus, 6 books"]},
+  {slug:'nsw-origin-game3', category:'Sport', q:'NSW to win State of Origin game three', prob:52, delta:5,
+    why:"Home ground advantage and a fit forward pack have shifted the line.",
+    sources:["Bookmaker consensus, 6 books"]},
+  {slug:'richmond-wooden-spoon', category:'Sport', q:'Richmond to take the AFL wooden spoon', prob:24, delta:-6,
+    why:"Three straight wins have pulled Richmond off the bottom of the ladder.",
+    sources:["Bookmaker consensus, 6 books"]},
+
+  {slug:'under16-ban-on-time', category:'Technology', q:'Under-16 social media ban enforced without delay', prob:47, delta:-5,
+    why:"Platform compliance timelines have slipped in early testing.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'au-unicorn-2026', category:'Technology', q:'A local AI startup to reach unicorn status this year', prob:19, delta:4,
+    why:"Two local raises this quarter have come in well above expectations.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'nbn-fibre-target', category:'Technology', q:'NBN full-fibre rollout to hit its target homes by year end', prob:55, delta:-3,
+    why:"Rollout pace has slowed in regional areas over winter.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'bank-branch-cuts', category:'Technology', q:'A major bank to cut branches further this year', prob:66, delta:2,
+    why:"Digital adoption numbers keep giving the majors cover to consolidate.",
+    sources:["Reckon editorial estimate"]},
+  {slug:'telco-outage-regulation', category:'Technology', q:'A telco outage to trigger new regulation this year', prob:29, delta:6,
+    why:"Pressure has built on the regulator since the last major network outage.",
+    sources:["Reckon editorial estimate"]},
+];
+
+function seedFromString(str){let h=0;for(let i=0;i<str.length;i++){h=(Math.imul(31,h)+str.charCodeAt(i))|0}return h>>>0}
+function mulberry32(a){return function(){a|=0;a=(a+0x6D2B79F5)|0;let t=Math.imul(a^a>>>15,1|a);t=(t+Math.imul(t^t>>>7,61|t))^t;return ((t^t>>>14)>>>0)/4294967296}}
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+
+function genHistory(m,n=14){
+  const rand = mulberry32(seedFromString(m.slug));
+  const start = clamp(m.prob - m.delta, 3, 97);
+  const pts = [start];
+  for(let i=1;i<n-1;i++){
+    const t = i/(n-1);
+    const base = start + (m.prob-start)*t;
+    pts.push(clamp(base + (rand()-0.5)*6, 3, 97));
+  }
+  pts.push(m.prob);
+  return pts;
+}
+
+function pickNews(m){
+  const rand = mulberry32(seedFromString(m.slug+'news'));
+  const idxs = new Set();
+  while(idxs.size<2) idxs.add(Math.floor(rand()*NEWS_LINES.length));
+  return [...idxs].map(i=>NEWS_LINES[i]);
+}
+
+function renderChart(points){
+  const W=560,H=160,pad=14;
+  const min=Math.min(...points), max=Math.max(...points);
+  const range = Math.max(max-min, 8);
+  const xy = points.map((v,i)=>{
+    const x = pad + (i/(points.length-1))*(W-pad*2);
+    const y = H-pad - ((v-min)/range)*(H-pad*2);
+    return [x,y];
+  });
+  const line = xy.map((p,i)=>(i===0?'M':'L')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+  const area = line + ` L${xy[xy.length-1][0].toFixed(1)},${H-pad} L${xy[0][0].toFixed(1)},${H-pad} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3DFFA2" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#3DFFA2" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${area}" fill="url(#fade)"/>
+    <path d="${line}" fill="none" stroke="#3DFFA2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function moveLabel(delta){
+  if(delta>0) return {cls:'up', txt:'▲ +'+delta+' pts (7d)'};
+  if(delta<0) return {cls:'dn', txt:'▼ '+delta+' pts (7d)'};
+  return {cls:'', txt:'Flat (7d)'};
+}
+
+function cardHTML(m){
+  const mv = moveLabel(m.delta);
+  return `<a class="card" href="#/market/${m.slug}" data-cat="${m.category}">
+    <div class="cat">${m.category}</div>
+    <div class="q">${m.q}</div>
+    <div class="price-row">
+      <div><span class="pct">${m.prob}%</span><span class="pct-label">chance</span></div>
+      <div class="move ${mv.cls}">${mv.txt}</div>
+    </div>
+  </a>`;
+}
+
+function renderGrid(filter){
+  const grid = document.getElementById('grid');
+  const items = MARKETS.filter(m=>filter==='All' || m.category===filter);
+  grid.innerHTML = items.map(cardHTML).join('');
+}
+
+function renderTabs(){
+  const tabs = document.getElementById('tabs');
+  const cats = ['All',...CATEGORIES];
+  tabs.innerHTML = cats.map((c,i)=>`<button class="tab${i===0?' on':''}" data-cat="${c}">${c}</button>`).join('');
+  tabs.addEventListener('click', e=>{
+    const btn = e.target.closest('.tab');
+    if(!btn) return;
+    tabs.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+    btn.classList.add('on');
+    renderGrid(btn.dataset.cat);
+  });
+}
+
+function showDetail(slug){
+  const m = MARKETS.find(x=>x.slug===slug);
+  if(!m){ location.hash = '#/'; return; }
+  document.getElementById('home').style.display='none';
+  document.getElementById('detail').style.display='block';
+  document.getElementById('d-cat').textContent = m.category;
+  document.getElementById('d-q').textContent = m.q;
+  document.getElementById('d-pct').textContent = m.prob+'%';
+  const mv = moveLabel(m.delta);
+  const moveEl = document.getElementById('d-move');
+  moveEl.textContent = mv.txt;
+  moveEl.className = 'dmove '+mv.cls;
+  document.getElementById('d-chart').innerHTML = renderChart(genHistory(m));
+  document.getElementById('d-why').textContent = m.why;
+  document.getElementById('d-sources').innerHTML = m.sources.map(s=>`<li>${s}</li>`).join('');
+  document.getElementById('d-news').innerHTML = pickNews(m).map(s=>`<li>${s}</li>`).join('');
+  window.scrollTo(0,0);
+}
+
+function showHome(){
+  document.getElementById('detail').style.display='none';
+  document.getElementById('home').style.display='block';
+}
+
+function route(){
+  const m = location.hash.match(/^#\/market\/(.+)$/);
+  if(m) showDetail(decodeURIComponent(m[1]));
+  else showHome();
+}
+
+renderTabs();
+renderGrid('All');
+window.addEventListener('hashchange', route);
+route();
+
+document.getElementById('subForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const btn = document.getElementById('subBtn');
+  const msg = document.getElementById('msg');
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  msg.style.display = 'none';
+  msg.classList.remove('err');
+  try {
+    const res = await fetch('/api/subscribe', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})
+    });
+    const data = await res.json();
+    if(res.ok){
+      msg.textContent = "You're in. First reckoning lands the day the board goes live.";
+      msg.style.display='block';
+      document.getElementById('subForm').reset();
+    } else throw new Error(data.error || 'Something went wrong');
+  } catch(err){
+    msg.textContent = "That did not go through. Give it another crack in a minute.";
+    msg.classList.add('err');
+    msg.style.display='block';
+  } finally {
+    btn.disabled=false;
+    btn.textContent='Get early access';
+  }
+});
+</script>
+
+</body>
+</html>
