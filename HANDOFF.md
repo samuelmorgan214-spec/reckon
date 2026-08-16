@@ -159,7 +159,8 @@ have, or accept that Actions is its single point of failure.
 **Odds API quota is now a live concern.** The every-3-hours cadence in
 `ingest.yml` had never actually run when its quota comment was written. First
 real run showed `credits_remaining: 452` on 16 August, against roughly 24
-credits/day from here. Widen the cron to 4 or 6 hours if it runs dry.
+credits/day from here. Widen the cron to 4 or 6 hours if it runs dry, and note
+that regenerating the key does not reset the quota.
 
 ### Repo secrets (GitHub -> Settings -> Secrets and variables -> Actions)
 | Secret | Value |
@@ -238,11 +239,17 @@ GitHub Actions secret, then redeploying.
 > - ~~`CRON_SECRET`~~ **Rotated.** New value in Vercel and, for the first time,
 >   in the GitHub Actions secret. It lives in **two** places. Update both or the
 >   ingests stop.
-> - `ODDS_API_KEY` **still burned.** Regenerates at the-odds-api.com, then
->   Vercel, then redeploy. No zero-downtime path: the old key dies immediately,
->   so ingests fail until the redeploy lands.
-> - `ADMIN_SECRET` **still burned.** `openssl rand -hex 32`, Vercel only, no
->   GitHub secret. This is the most dangerous one left outstanding.
+> - ~~`ODDS_API_KEY`~~ **Rotated and verified**, `ok:true` with credits
+>   remaining. Regenerating does **not** reset the monthly quota: the new key
+>   drew on the same pool (452 -> 449). No zero-downtime path either, the old
+>   key dies immediately, so ingests fail until the redeploy lands.
+> - ~~`ADMIN_SECRET`~~ **Rotated.** Vercel only, no GitHub secret. Confirmed the
+>   old value is dead: `/api/admin/*` returns 401 to an unauthenticated request
+>   and to a wrong bearer. Keep the new value in a password manager, it exists
+>   in exactly one place and manual price entry needs it.
+>
+> **All four rotated 16 August 2026.** Still worth doing: revoke the old
+> Supabase `service_role` key if that was not done at the time.
 >
 > **2. A GitHub personal access token was pasted into a chat on 3 August 2026**
 > and has not been revoked. Delete it at
