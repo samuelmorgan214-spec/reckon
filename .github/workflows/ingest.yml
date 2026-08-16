@@ -33,3 +33,11 @@ jobs:
         run: |
           curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             "${{ secrets.SITE_URL }}/api/cron/ingest-rba"
+      # Outrights move slowly, so twice a day is plenty. Costs no Odds API
+      # credits. Returns ok:false with a note until the Betfair credentials
+      # are set in Vercel, which does not fail the run.
+      - name: Ingest Betfair outrights
+        if: github.event.schedule == '15 6,20 * * *' || github.event_name == 'workflow_dispatch'
+        run: |
+          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.SITE_URL }}/api/cron/ingest-betfair"
