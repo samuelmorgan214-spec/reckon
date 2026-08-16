@@ -9,11 +9,49 @@
 //
 // Read-only: it lists markets and runner names, and writes nothing.
 
+import crypto from 'node:crypto';
 import { login, call } from '../../lib/betfair.js';
+
+// Shape of a stored PEM, with nothing sensitive in it: the header line, the
+// line count, and a hash of the *public* half. If the cert and the key were
+// stored intact and as a pair, the two publicKeySha256 values match.
+function pemShape(pem, kind) {
+  if (!pem) return { present: false };
+  const lines = pem.split('\n');
+  const shape = {
+    present: true,
+    firstLine: lines[0],
+    lastLine: lines.filter(Boolean).pop(),
+    lines: lines.length,
+    chars: pem.length,
+    hasLiteralBackslashN: pem.includes('\\n'),
+  };
+  try {
+    const pub =
+      kind === 'cert'
+        ? crypto.createPublicKey(new crypto.X509Certificate(pem).publicKey)
+        : crypto.createPublicKey(crypto.createPrivateKey(pem));
+    shape.publicKeySha256 = crypto
+      .createHash('sha256')
+      .update(pub.export({ type: 'spki', format: 'der' }))
+      .digest('hex')
+      .slice(0, 16);
+  } catch (err) {
+    shape.parseError = String(err.message || err);
+  }
+  return shape;
+}
 
 export default async function handler(req, res) {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'unauthorized' });
+  }
+
+  if (req.query.shape) {
+    return res.status(200).json({
+      cert: pemShape(process.env.BETFAIR_CERT, 'cert'),
+      key: pemShape(process.env.BETFAIR_KEY, 'key'),
+    });
   }
 
   const q = String(req.query.q || 'premiership');
