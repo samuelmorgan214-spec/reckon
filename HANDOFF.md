@@ -6,7 +6,7 @@ Read this plus `README.md` and you have the full picture.
 **This file contains no secrets and is safe to store anywhere.** Where a
 credential is needed, it says which console to fetch it from.
 
-Last updated: 4 August 2026.
+Last updated: 16 August 2026.
 
 ## What Reckon is
 Australian prediction-market media brand. Tagline "what do you reckon?",
@@ -35,10 +35,11 @@ Logo is the bare lowercase "reckon" wordmark.
 
 ## Getting set up on a new machine
 
-> **Read this before cloning.** As of 4 August 2026 the two newest commits
-> (`b15eb48`, `67f6e43`, the live carousel work) exist **only on the Mac they
-> were written on**. Push was never authenticated. A plain clone from GitHub
-> gets you the code *without* them. See "Moving the unpushed work" below.
+> **Resolved 16 August 2026.** The migration to the Mac mini is complete. The
+> once-stranded commits (`b15eb48`, `67f6e43`, the carousel work) are pushed,
+> SSH auth works from the mini, and local `main` matches `origin/main`. A plain
+> clone now gets you everything. The bundle steps below are kept only for the
+> next machine move.
 
 1. Install git, then clone:
    ```
@@ -56,6 +57,10 @@ Logo is the bare lowercase "reckon" wordmark.
    because `/api/*` only runs on Vercel.
 4. You do **not** need a local `.env` for normal work. All credentials live in
    Vercel. Only recreate `.env` if running ingest scripts locally.
+5. Install the GitHub CLI, `brew install gh`, then `gh auth login`. Not needed
+   to build, but it is the fastest way to see whether the ingest scheduler is
+   actually running: `gh run list`. Already installed and authenticated on the
+   Mac mini as of 16 August 2026.
 
 ### Getting push to work (do this once, it is the fiddly bit)
 
@@ -124,9 +129,46 @@ so the record is permanent and auditable.
 | Endpoint | Source | Status |
 |---|---|---|
 | `/api/cron/ingest-odds` | The Odds API, AU bookmakers | Working. AFL + NRL match markets. |
-| `/api/cron/ingest-kalshi` | Kalshi exchange | Working. US politics, crypto, F1. |
+| `/api/cron/ingest-kalshi` | Kalshi exchange | Working since 16 Aug 2026. See below. |
 | `/api/cron/ingest-rba` | ASX RBA tracker scrape | Scrape fails, needs manual entry. |
 | `/api/cron/ingest-betfair` | Betfair Exchange | **Built, never run.** Needs credentials. |
+
+### The scheduler was dead for four weeks (fixed 16 August 2026)
+
+Worth reading before trusting anything above. The GitHub Actions workflow had
+**159 runs between 20 July and 16 August 2026 and not one succeeded.** Neither
+repo secret had ever been created, so every run expanded to:
+
+```
+curl -fsS -H "Authorization: Bearer " "/api/cron/ingest-odds"
+curl: (3) URL rejected: No host part in the URL
+```
+
+Nothing surfaced it. A red cron that nobody watches is indistinguishable from
+one that works, so check `gh run list` when picking this up again.
+
+What masked it: the daily crons in `vercel.json` are a real backup, because
+**Vercel sends the `Bearer <CRON_SECRET>` header automatically**. So odds and
+RBA kept ingesting once a day at 20:00 UTC instead of every three hours.
+
+**`ingest-kalshi` is not in `vercel.json`.** It only ever ran from Actions, so
+those 16 markets had no automatic updates at all between 20 July and 16 August.
+Either add it to `vercel.json` for the same belt-and-braces cover the others
+have, or accept that Actions is its single point of failure.
+
+**Odds API quota is now a live concern.** The every-3-hours cadence in
+`ingest.yml` had never actually run when its quota comment was written. First
+real run showed `credits_remaining: 452` on 16 August, against roughly 24
+credits/day from here. Widen the cron to 4 or 6 hours if it runs dry.
+
+### Repo secrets (GitHub -> Settings -> Secrets and variables -> Actions)
+| Secret | Value |
+|---|---|
+| `SITE_URL` | `https://reckonhq.com.au`. Not secret, just config. |
+| `CRON_SECRET` | Must match the `CRON_SECRET` in Vercel exactly. |
+
+Both were created 16 August 2026. If ingests start failing with exit code 3,
+one of them has gone missing again.
 
 ### Read endpoints (public, behind the site password gate)
 | Endpoint | What it serves |
@@ -179,26 +221,28 @@ Never paste these into a chat or a shared document. All five are already set in
 Regenerating `CRON_SECRET` or `ADMIN_SECRET` means updating Vercel **and** the
 GitHub Actions secret, then redeploying.
 
-> **Outstanding security tasks. Nothing below has been done yet.**
+> **Security tasks. Rotation started 16 August 2026, two of four done.**
 >
-> **1. Four secrets are exposed, not one.** The original note only tracked the
-> Supabase key, but the AirDropped `.env` carried all of them. As of 4 August
-> 2026 a live copy sits at `~/Downloads/reckon/.env` on the old machine holding
+> **1. Four secrets were exposed, not one.** The original note only tracked the
+> Supabase key, but the AirDropped `.env` carried all of them. A live copy sat
+> at `~/Downloads/reckon/.env` on the old machine holding
 > `SUPABASE_SERVICE_ROLE_KEY`, `ODDS_API_KEY`, `CRON_SECRET` and `ADMIN_SECRET`.
-> Treat all four as burned. `ADMIN_SECRET` is the one that lets anyone write
+> All four were burned. `ADMIN_SECRET` is the one that lets anyone write
 > arbitrary prices to the board through `/api/admin/set-price`.
 >
-> Rotate in this order, verifying the board after each:
-> - `SUPABASE_SERVICE_ROLE_KEY` in Supabase -> API Keys. If the project offers
->   new-style `sb_secret_...` keys, create the new one first, put it in Vercel,
->   redeploy, verify, and only then revoke the old one, which is zero downtime.
->   If it only offers legacy `anon`/`service_role`, resetting the JWT secret
->   kills both at once and the board 500s until the redeploy lands. Nothing in
->   the browser uses the anon key, so losing it breaks nothing.
-> - `ODDS_API_KEY` regenerates at the-odds-api.com.
-> - `CRON_SECRET` and `ADMIN_SECRET` are yours to invent, `openssl rand -hex 32`.
->   `CRON_SECRET` lives in **two** places, Vercel and the GitHub Actions secret.
->   Update both or the ingests stop.
+> Status as of 16 August 2026:
+> - ~~`SUPABASE_SERVICE_ROLE_KEY`~~ **Rotated and verified.** New-style
+>   `sb_secret_...` key created, put in Vercel, redeployed, and confirmed by a
+>   green ingest run writing rows. Zero downtime. Revoke the old `service_role`
+>   key if that has not been done yet.
+> - ~~`CRON_SECRET`~~ **Rotated.** New value in Vercel and, for the first time,
+>   in the GitHub Actions secret. It lives in **two** places. Update both or the
+>   ingests stop.
+> - `ODDS_API_KEY` **still burned.** Regenerates at the-odds-api.com, then
+>   Vercel, then redeploy. No zero-downtime path: the old key dies immediately,
+>   so ingests fail until the redeploy lands.
+> - `ADMIN_SECRET` **still burned.** `openssl rand -hex 32`, Vercel only, no
+>   GitHub secret. This is the most dangerous one left outstanding.
 >
 > **2. A GitHub personal access token was pasted into a chat on 3 August 2026**
 > and has not been revoked. Delete it at
@@ -218,6 +262,11 @@ GitHub Actions secret, then redeploying.
 > fix. Delete them anyway.
 
 ## Gotchas that cost time this session
+- **A silently failing cron looks exactly like a working one.** Four weeks of
+  red runs went unnoticed. `gh run list` is the two-second check.
+- **curl exit code 3 means "URL malformed", not "auth failed".** In a workflow
+  that reads secrets, exit 3 points at an empty or missing secret expanding to
+  nothing, not at a bad credential. Auth failure under `-f` is exit 22.
 - **Vercel env var changes need a redeploy.** Saving alone does nothing.
   Deployments -> ⋯ -> Redeploy.
 - **`/api/prices` is CDN-cached for 5 minutes.** After an ingest or a category
@@ -249,7 +298,9 @@ GitHub Actions secret, then redeploying.
   board has to survive those being missing.
 
 ## PENDING — next steps in order
-1. **Rotate the Supabase service_role key** (see security note above).
+1. ~~**Rotate the Supabase service_role key**~~ Done 16 August 2026. Finish the
+   rotation: `ODDS_API_KEY` and `ADMIN_SECRET` are still burned. See the
+   security note above.
 2. **Betfair credentials.** The ingester is written and deployed but has never
    run. Needs a Betfair Australia account, then the **free Delayed App Key**
    via https://betfair-datascientists.github.io/api/apiappkey/ — not the Live
