@@ -1,5 +1,6 @@
 import { serviceClient } from '../../lib/supabase.js';
 import { devig } from '../../lib/devig.js';
+import { IDENTITY, BETTING } from '../../lib/betfair.js';
 
 // GET /api/cron/ingest-betfair
 // Outright (futures) markets from the Betfair Exchange: AFL and NRL premiership
@@ -21,13 +22,6 @@ import { devig } from '../../lib/devig.js';
 // The free Delayed App Key is sufficient here: prices lag by 1-180s, which is
 // immaterial for a media board and avoids the Live key activation fee.
 
-// Australian jurisdiction. Betfair AU/NZ is a separate licence from the
-// international exchange, and an AU account will not authenticate against the
-// .com hosts: the login returns INVALID_USERNAME_OR_PASSWORD, which reads like
-// a typo rather than a wrong endpoint. If login fails against these, try the
-// .com hosts before assuming the credentials are wrong.
-const IDENTITY = 'https://identitysso.betfair.com.au/api/login';
-const BETTING = 'https://api.betfair.com.au/exchange/betting/rest/v1.0';
 const ATTRIBUTION = 'Betfair Exchange, delayed';
 
 async function login(appKey, username, password) {

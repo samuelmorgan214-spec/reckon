@@ -3,8 +3,7 @@
 // values can be pasted into a market's source_config. Read-only lookup helper.
 // Auth: Authorization: Bearer <ADMIN_SECRET>.
 
-const IDENTITY = 'https://identitysso.betfair.com/api/login';
-const BETTING = 'https://api.betfair.com/exchange/betting/rest/v1.0';
+import { IDENTITY, BETTING } from '../../lib/betfair.js';
 
 export default async function handler(req, res) {
   if (req.headers.authorization !== `Bearer ${process.env.ADMIN_SECRET}`) {
