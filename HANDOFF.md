@@ -308,12 +308,33 @@ GitHub Actions secret, then redeploying.
 1. ~~**Rotate the Supabase service_role key**~~ Done 16 August 2026. Finish the
    rotation: `ODDS_API_KEY` and `ADMIN_SECRET` are still burned. See the
    security note above.
-2. **Betfair credentials.** The ingester is written and deployed but has never
-   run. Needs a Betfair Australia account, then the **free Delayed App Key**
-   via https://betfair-datascientists.github.io/api/apiappkey/ — not the Live
-   key, which costs £499 and is only for placing bets. Then add
-   `BETFAIR_APP_KEY`, `BETFAIR_USERNAME`, `BETFAIR_PASSWORD` to Vercel and
-   redeploy. This unlocks AFL/NRL premiership futures and Australian politics.
+2. **Betfair credentials.** Account exists, app key, username and password are
+   in Vercel as of 16 August 2026. **Blocked on a client certificate.**
+
+   Automated login is certificate-only. The interactive endpoint
+   (`identitysso.betfair.com/api/login`) sits behind bot mitigation and answers
+   a server-to-server POST with HTTP 403 and an HTML page, never JSON. Both
+   `.com` and `.com.au` do this, so that 403 is neither a wrong password nor a
+   wrong jurisdiction, which is exactly how it was misread the first time.
+   Betfair documents the non-interactive path as a mutual-TLS POST to
+   `identitysso-cert.betfair.com/api/certlogin`.
+
+   To finish, once:
+   - Enable non-interactive login on the Betfair My Account security page.
+   - `openssl genrsa -out client-2048.key 2048`
+     `openssl req -new -x509 -days 3650 -key client-2048.key -out client-2048.crt`
+   - Upload `client-2048.crt` to Betfair.
+   - Add `BETFAIR_CERT` and `BETFAIR_KEY` to Vercel, full file contents
+     including the BEGIN/END lines, then redeploy.
+
+   Check progress with `gh workflow run ingest.yml` and read the "Probe Betfair
+   lookup" step: it names exactly which variables are still missing. The free
+   Delayed App Key is the right one, not the Live key, which costs £499 and is
+   only for placing bets. This unlocks AFL/NRL premiership futures and
+   Australian politics.
+
+   `api/cron/betfair-probe.js` and its workflow step are **temporary**. Delete
+   both once the markets are seeded.
 3. **Re-seed the AFL premiership markets.** The seeded teams (Collingwood,
    Brisbane Lions, Carlton, Geelong) are stale. As of late July 2026 the actual
    futures favourites are Fremantle (~$5.50) and Sydney (~$6.50). NRL is closer
