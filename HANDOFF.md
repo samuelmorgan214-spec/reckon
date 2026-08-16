@@ -308,8 +308,33 @@ GitHub Actions secret, then redeploying.
 1. ~~**Rotate the Supabase service_role key**~~ Done 16 August 2026. Finish the
    rotation: `ODDS_API_KEY` and `ADMIN_SECRET` are still burned. See the
    security note above.
-2. **Betfair credentials.** Account exists, app key, username and password are
-   in Vercel as of 16 August 2026. **Blocked on a client certificate.**
+2. **Betfair credentials.** **Blocked on one account-side switch, nothing else.**
+
+   As of the evening of 16 August 2026, all five variables are in Vercel
+   (`BETFAIR_APP_KEY`, `BETFAIR_USERNAME`, `BETFAIR_PASSWORD`, `BETFAIR_CERT`,
+   `BETFAIR_KEY`) and the mutual-TLS handshake to Betfair **succeeds**. The
+   login returns HTTP 200 with `loginStatus: CERT_AUTH_REQUIRED`, three times
+   in a row, meaning Betfair does not recognise our certificate against the
+   account. Retrying does not help, the response is deterministic.
+
+   Next step is on the Betfair site, not in this repo: the **Automated Betting
+   Program Access** panel must show the *current* `~/client-2048.crt` as
+   uploaded. That panel needs Edit clicked before Choose file, and a save
+   after, or the upload silently does not commit. If the panel looks right and
+   it still fails, some accounts need automated access approved by Betfair:
+   automation@betfair.com.au.
+
+   **Set the cert and key with `vercel env add BETFAIR_KEY production <
+   ~/client-2048.key`, not by pasting.** A paste is where this went wrong once
+   already.
+
+   **A regenerated key silently breaks the pair.** `openssl genrsa` was re-run
+   after the certificate was issued, which overwrote the key and left the
+   uploaded cert orphaned. The symptom was a TLS `key values mismatch` that
+   looked like a bad paste. Check with:
+   `openssl x509 -noout -modulus -in client-2048.crt | openssl md5` against
+   `openssl rsa -noout -modulus -in client-2048.key | openssl md5`.
+   If they differ, reissue the cert from the current key and re-upload it.
 
    Automated login is certificate-only. The interactive endpoint
    (`identitysso.betfair.com/api/login`) sits behind bot mitigation and answers
