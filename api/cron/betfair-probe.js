@@ -29,7 +29,7 @@ function pemShape(pem, kind) {
   try {
     const pub =
       kind === 'cert'
-        ? crypto.createPublicKey(new crypto.X509Certificate(pem).publicKey)
+        ? new crypto.X509Certificate(pem).publicKey
         : crypto.createPublicKey(crypto.createPrivateKey(pem));
     shape.publicKeySha256 = crypto
       .createHash('sha256')
