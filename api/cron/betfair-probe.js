@@ -9,97 +9,23 @@
 //
 // Read-only: it lists markets and runner names, and writes nothing.
 
-import { IDENTITY, BETTING } from '../../lib/betfair.js';
+import { login, call } from '../../lib/betfair.js';
 
 export default async function handler(req, res) {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'unauthorized' });
   }
-  const appKey = process.env.BETFAIR_APP_KEY;
-  const username = process.env.BETFAIR_USERNAME;
-  const password = process.env.BETFAIR_PASSWORD;
-  if (!appKey || !username || !password) {
-    return res.status(200).json({
-      ok: false,
-      error: 'BETFAIR_APP_KEY, BETFAIR_USERNAME and BETFAIR_PASSWORD must be set',
-      present: {
-        appKey: Boolean(appKey),
-        username: Boolean(username),
-        password: Boolean(password),
-      },
-    });
-  }
 
   const q = String(req.query.q || 'premiership');
+  const auth = await login();
 
-  // Try both jurisdictions and report each, so a wrong host is distinguishable
-  // from a bad credential in one run instead of one deploy per guess.
-  const CANDIDATES = [
-    { host: IDENTITY, betting: BETTING },
-    { host: 'https://identitysso.betfair.com/api/login', betting: 'https://api.betfair.com/exchange/betting/rest/v1.0' },
-  ];
-
-  const attempts = [];
-  let token = null;
-  let betting = null;
-
-  for (const c of CANDIDATES) {
-    try {
-      const lr = await fetch(c.host, {
-        method: 'POST',
-        headers: {
-          'X-Application': appKey,
-          'Content-Type': 'application/x-www-form-urlencoded',
-          Accept: 'application/json',
-        },
-        body: new URLSearchParams({ username, password }).toString(),
-      });
-      const raw = await lr.text();
-      let ld = {};
-      try { ld = JSON.parse(raw); } catch { /* not JSON, keep the snippet below */ }
-      attempts.push({
-        endpoint: c.host,
-        httpStatus: lr.status,
-        betfairStatus: ld.status || null,
-        betfairError: ld.error || null,
-        // First 200 chars only: enough to identify an HTML block page or a WAF
-        // response, short enough not to dump a page into the run log.
-        bodySnippet: ld.status ? null : raw.slice(0, 200),
-      });
-      if (ld.status === 'SUCCESS') {
-        token = ld.token;
-        betting = c.betting;
-        break;
-      }
-    } catch (err) {
-      attempts.push({ endpoint: c.host, fetchError: String(err.message || err) });
-    }
-  }
-
-  if (!token) {
-    return res.status(200).json({ ok: false, stage: 'login', attempts });
+  if (!auth.ok) {
+    return res.status(200).json({ ok: false, stage: 'login', ...auth });
   }
 
   try {
-    const BETTING_URL = betting;
-
-    const call = async (path, body) => {
-      const r = await fetch(`${BETTING_URL}/${path}`, {
-        method: 'POST',
-        headers: {
-          'X-Application': appKey,
-          'X-Authentication': token,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-      if (!r.ok) throw new Error(`${path} HTTP ${r.status}`);
-      return r.json();
-    };
-
-    const eventTypes = await call('listEventTypes/', { filter: {} });
-    const markets = await call('listMarketCatalogue/', {
+    const eventTypes = await call('listEventTypes/', auth.sessionToken, { filter: {} });
+    const markets = await call('listMarketCatalogue/', auth.sessionToken, {
       filter: { textQuery: q },
       marketProjection: ['EVENT', 'EVENT_TYPE', 'RUNNER_DESCRIPTION'],
       maxResults: 25,
@@ -109,7 +35,6 @@ export default async function handler(req, res) {
     res.status(200).json({
       ok: true,
       stage: 'lookup',
-      loginEndpoint: attempts[attempts.length - 1].endpoint,
       query: q,
       eventTypes: (eventTypes || [])
         .map(e => ({ id: e.eventType.id, name: e.eventType.name, markets: e.marketCount }))

@@ -1,6 +1,6 @@
 import { serviceClient } from '../../lib/supabase.js';
 import { devig } from '../../lib/devig.js';
-import { IDENTITY, BETTING } from '../../lib/betfair.js';
+import { login, call } from '../../lib/betfair.js';
 
 // GET /api/cron/ingest-betfair
 // Outright (futures) markets from the Betfair Exchange: AFL and NRL premiership
@@ -18,42 +18,13 @@ import { IDENTITY, BETTING } from '../../lib/betfair.js';
 //   {"provider":"betfair","eventTypeId":"61420","marketName":"Premiership Winner","runner":"Penrith Panthers"}
 //
 // Auth: Authorization: Bearer <CRON_SECRET>.
-// Credentials: BETFAIR_APP_KEY, BETFAIR_USERNAME, BETFAIR_PASSWORD.
+// Credentials: BETFAIR_APP_KEY, BETFAIR_USERNAME, BETFAIR_PASSWORD, plus
+// BETFAIR_CERT and BETFAIR_KEY. Automated login is certificate-only, see
+// lib/betfair.js for why and for the one-time account setup.
 // The free Delayed App Key is sufficient here: prices lag by 1-180s, which is
 // immaterial for a media board and avoids the Live key activation fee.
 
 const ATTRIBUTION = 'Betfair Exchange, delayed';
-
-async function login(appKey, username, password) {
-  const r = await fetch(IDENTITY, {
-    method: 'POST',
-    headers: {
-      'X-Application': appKey,
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
-    },
-    body: new URLSearchParams({ username, password }).toString(),
-  });
-  if (!r.ok) throw new Error(`betfair login HTTP ${r.status}`);
-  const d = await r.json();
-  if (d.status !== 'SUCCESS') throw new Error(`betfair login ${d.status}: ${d.error || ''}`);
-  return d.token;
-}
-
-async function rpc(path, token, appKey, body) {
-  const r = await fetch(`${BETTING}/${path}`, {
-    method: 'POST',
-    headers: {
-      'X-Application': appKey,
-      'X-Authentication': token,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  if (!r.ok) throw new Error(`betfair ${path} HTTP ${r.status}`);
-  return r.json();
-}
 
 // Best available back price for each runner, as an implied probability.
 // Falls back to last traded price when the book is empty on the back side.
@@ -69,16 +40,6 @@ export default async function handler(req, res) {
   if (req.headers.authorization !== `Bearer ${process.env.CRON_SECRET}`) {
     return res.status(401).json({ error: 'unauthorized' });
   }
-  const appKey = process.env.BETFAIR_APP_KEY;
-  const username = process.env.BETFAIR_USERNAME;
-  const password = process.env.BETFAIR_PASSWORD;
-  if (!appKey || !username || !password) {
-    return res.status(200).json({
-      ok: false,
-      error: 'BETFAIR_APP_KEY, BETFAIR_USERNAME and BETFAIR_PASSWORD must be set',
-    });
-  }
-
   const supabase = serviceClient();
   const log = [];
   const now = new Date().toISOString();
@@ -94,7 +55,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ ok: true, log: ['no active betfair markets configured'] });
     }
 
-    const token = await login(appKey, username, password);
+    const auth = await login();
+    if (!auth.ok) return res.status(200).json({ ok: false, stage: 'login', ...auth, log });
+    const token = auth.sessionToken;
 
     // Group our markets by the Betfair marketId they read from, so each
     // exchange market is fetched once and normalised across its full runner set.
@@ -108,7 +71,7 @@ export default async function handler(req, res) {
     for (const [marketId, ours] of Object.entries(byMarketId)) {
       let book;
       try {
-        const [b] = await rpc('listMarketBook/', token, appKey, {
+        const [b] = await call('listMarketBook/', token, {
           marketIds: [marketId],
           priceProjection: { priceData: ['EX_BEST_OFFERS'] },
         });
@@ -127,7 +90,7 @@ export default async function handler(req, res) {
       }
 
       // Name the runners so we can match ours against them.
-      const [cat] = await rpc('listMarketCatalogue/', token, appKey, {
+      const [cat] = await call('listMarketCatalogue/', token, {
         filter: { marketIds: [marketId] },
         marketProjection: ['RUNNER_DESCRIPTION'],
         maxResults: 1,

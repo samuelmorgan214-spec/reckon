@@ -3,55 +3,22 @@
 // values can be pasted into a market's source_config. Read-only lookup helper.
 // Auth: Authorization: Bearer <ADMIN_SECRET>.
 
-import { IDENTITY, BETTING } from '../../lib/betfair.js';
+import { login, call as bfCall } from '../../lib/betfair.js';
 
 export default async function handler(req, res) {
   if (req.headers.authorization !== `Bearer ${process.env.ADMIN_SECRET}`) {
     return res.status(401).json({ error: 'unauthorized' });
   }
-  const appKey = process.env.BETFAIR_APP_KEY;
-  const username = process.env.BETFAIR_USERNAME;
-  const password = process.env.BETFAIR_PASSWORD;
-  if (!appKey || !username || !password) {
-    return res.status(200).json({ error: 'betfair credentials not set' });
-  }
-
   const q = String(req.query.q || 'premiership');
   const eventTypeIds = req.query.eventTypeIds
     ? String(req.query.eventTypeIds).split(',')
     : undefined;
 
+  const auth = await login();
+  if (!auth.ok) return res.status(200).json({ ok: false, stage: 'login', ...auth });
+  const call = (path, body) => bfCall(path, auth.sessionToken, body);
+
   try {
-    const lr = await fetch(IDENTITY, {
-      method: 'POST',
-      headers: {
-        'X-Application': appKey,
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json',
-      },
-      body: new URLSearchParams({ username, password }).toString(),
-    });
-    const ld = await lr.json();
-    if (ld.status !== 'SUCCESS') {
-      return res.status(200).json({ error: `login ${ld.status}: ${ld.error || ''}` });
-    }
-    const token = ld.token;
-
-    const call = async (path, body) => {
-      const r = await fetch(`${BETTING}/${path}`, {
-        method: 'POST',
-        headers: {
-          'X-Application': appKey,
-          'X-Authentication': token,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-      if (!r.ok) throw new Error(`${path} HTTP ${r.status}`);
-      return r.json();
-    };
-
     // Listing event types helps identify the right sport id (AFL, NRL, Politics).
     const eventTypes = await call('listEventTypes/', { filter: {} });
 
