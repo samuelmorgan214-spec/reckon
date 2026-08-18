@@ -317,6 +317,14 @@ GitHub Actions secret, then redeploying.
    in a row, meaning Betfair does not recognise our certificate against the
    account. Retrying does not help, the response is deterministic.
 
+   **Proven account-side, 16 August 2026.** Running certlogin from a laptop,
+   bypassing Vercel, with deliberately fake credentials returns the same
+   `CERT_AUTH_REQUIRED` on both hosts. A registered certificate would have
+   returned `INVALID_USERNAME_OR_PASSWORD` instead, because the cert is checked
+   before the credentials. So the code, the hosts, the env vars and the
+   password are all ruled out. Reproduce with:
+   `curl -s --cert client-2048.crt --key client-2048.key -H "X-Application: probe" -d "username=x&password=y" https://identitysso-cert.betfair.com/api/certlogin`
+
    Next step is on the Betfair site, not in this repo: the **Automated Betting
    Program Access** panel must show the *current* `~/client-2048.crt` as
    uploaded. That panel needs Edit clicked before Choose file, and a save
