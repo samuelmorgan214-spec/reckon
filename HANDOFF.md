@@ -397,8 +397,16 @@ GitHub Actions secret, then redeploying.
 5. **`methodology.html` is not linked prominently** and was never reviewed after
    its rebuild. It is committed and current.
 6. **`coming-soon.html`** exists as a standalone pre-launch page, never used.
-7. **Source terms review** (`docs/source-terms.md`) before any real promotion:
-   confirm Odds API and Kalshi display terms. Betfair adds another to check.
+7. **Source terms review** (`docs/source-terms.md`). Done 18 August 2026 for
+   The Odds API and Kalshi. **Kalshi is a launch blocker.** Their published
+   data terms permit personal non-commercial use only and prohibit public
+   display without prior written authorisation, with no media carve-out. That
+   is 16 live markets, about a third of the board. The fix is to email Kalshi
+   for written permission, which exchanges usually grant for price coverage.
+   The Odds API is cleared for display including commercial use, with one trap
+   recorded: never document or open up `/api/prices` as a public feed, because
+   that becomes redistribution as a standalone data product. Betfair and ASX
+   are still unreviewed, but neither is displaying anything yet.
 
 ## The featured carousel
 Rewritten 4 August 2026 (`b15eb48`, `67f6e43`). Worth knowing why it looks the
