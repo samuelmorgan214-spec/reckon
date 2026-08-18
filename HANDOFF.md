@@ -317,7 +317,27 @@ GitHub Actions secret, then redeploying.
    in a row, meaning Betfair does not recognise our certificate against the
    account. Retrying does not help, the response is deterministic.
 
-   **Proven account-side, 16 August 2026.** Running certlogin from a laptop,
+   **Update, 18 August 2026. The certificate is registered and accepted.**
+   The remaining blocker is a Betfair account flag, and it is with Betfair.
+
+   The login now returns `ACCOUNT_PENDING_PASSWORD_CHANGE` on both hosts. That
+   is an account state, not a rejection of the password sent, so it will keep
+   returning even with correct credentials. It did not clear after a real
+   password change made through My Security, and the website logs in normally
+   with no prompt. Emailed automation@betfair.com.au to have the flag cleared.
+
+   **Use the `.com.au` host.** With the certificate registered, `.com` answered
+   `CERT_AUTH_REQUIRED` while `.com.au` got through to the account state. A
+   certificate is registered against one jurisdiction, so a rejection from the
+   wrong host is expected and is not a bad certificate. Both hosts now report
+   the account flag, so cert auth is passing on both.
+
+   **Do not test cert registration with a fake username.** Betfair looks the
+   account up first, so any nonexistent user returns `CERT_AUTH_REQUIRED`
+   regardless of what is on the account. That test was run and read as proof
+   the certificate was unregistered, which sent this down a wrong path.
+
+   **Earlier, superseded diagnosis, 16 August 2026.** Running certlogin from a laptop,
    bypassing Vercel, with deliberately fake credentials returns the same
    `CERT_AUTH_REQUIRED` on both hosts. A registered certificate would have
    returned `INVALID_USERNAME_OR_PASSWORD` instead, because the cert is checked
