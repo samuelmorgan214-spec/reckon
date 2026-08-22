@@ -54,7 +54,9 @@ export default async function handler(req, res) {
     });
   }
 
-  const q = String(req.query.q || 'premiership');
+  // An explicitly empty q means "no text filter", which is how you list the
+  // biggest markets for a sport. Omitting q entirely keeps the old default.
+  const q = req.query.q === undefined ? 'premiership' : String(req.query.q);
   const auth = await login();
 
   if (!auth.ok) {
