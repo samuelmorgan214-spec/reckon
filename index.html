@@ -233,6 +233,7 @@ footer a{color:var(--mint-dim)}
   <div class="tabs" role="tablist" aria-label="Market categories">
     <button class="tab" data-cat="afl">AFL</button>
     <button class="tab" data-cat="nrl">NRL</button>
+    <button class="tab" data-cat="futures">Futures</button>
     <button class="tab" data-cat="sports">Sports</button>
     <button class="tab" data-cat="politics">Politics</button>
     <button class="tab" data-cat="economy">Economy</button>
@@ -374,14 +375,30 @@ function interleaveByCategory(list){
   return result;
 }
 
+// Futures are the "who wins the comp" markets: one Betfair outright market
+// split across its runners. They stay in their afl/nrl categories as well, so
+// this tab is a second way in rather than a move.
+function isFutures(m){
+  return m.source_type === "exchange" && (m.category === "afl" || m.category === "nrl");
+}
+
+function matchesCat(m){
+  if (activeCat === "all") return true;
+  if (activeCat === "futures") return isFutures(m);
+  return m.category === activeCat;
+}
+
 function render(){
   grid.innerHTML = "";
   let filtered = markets.filter(m =>
-    (activeCat === "all" || m.category === activeCat) &&
+    matchesCat(m) &&
     (!query || (m.question + " " + m.category).toLowerCase().includes(query))
   );
   if (activeCat === "all") filtered = interleaveByCategory(filtered);
-  if (!query) filtered = filtered.slice(0, 16);
+  // A premiership race reads as a leaderboard, so order it by price and show
+  // the whole field rather than truncating mid-ladder.
+  if (activeCat === "futures") filtered.sort((a, b) => b.probability - a.probability);
+  if (!query && activeCat !== "futures") filtered = filtered.slice(0, 16);
   filtered.forEach(m => {
     const pct = Math.round(m.probability * 100);
     const cls = m.move > 0 ? "up" : (m.move < 0 ? "dn" : "flat");
@@ -406,7 +423,9 @@ function render(){
     grid.appendChild(card);
   });
   if (!grid.children.length) {
-    grid.innerHTML = '<p class="empty">No markets match that. Try another word, or clear the search.</p>';
+    grid.innerHTML = '<p class="empty">' + (activeCat === "futures" && !query
+      ? "No futures priced yet. Premiership markets appear here once the exchange has them open."
+      : "No markets match that. Try another word, or clear the search.") + '</p>';
   }
   document.querySelectorAll(".vote").forEach(applyVote);
   renderTicker();
