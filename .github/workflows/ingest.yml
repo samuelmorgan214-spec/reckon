@@ -43,7 +43,7 @@ jobs:
           curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             "${{ secrets.SITE_URL }}/api/cron/betfair-probe?shape=1"
           curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "${{ secrets.SITE_URL }}/api/cron/betfair-probe?q=premiership"
+            "${{ secrets.SITE_URL }}/api/cron/betfair-probe?q=winner&eventTypeIds=61420,1477"
       - name: Ingest Betfair outrights
         if: github.event.schedule == '15 6,20 * * *' || github.event_name == 'workflow_dispatch'
         run: |

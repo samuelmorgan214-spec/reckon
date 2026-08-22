@@ -63,8 +63,15 @@ export default async function handler(req, res) {
 
   try {
     const eventTypes = await call('listEventTypes/', auth.sessionToken, { filter: {} });
+    const eventTypeIds = req.query.eventTypeIds
+      ? String(req.query.eventTypeIds).split(',')
+      : undefined;
+
     const markets = await call('listMarketCatalogue/', auth.sessionToken, {
-      filter: { textQuery: q },
+      filter: {
+        ...(q ? { textQuery: q } : {}),
+        ...(eventTypeIds ? { eventTypeIds } : {}),
+      },
       marketProjection: ['EVENT', 'EVENT_TYPE', 'RUNNER_DESCRIPTION'],
       maxResults: 25,
       sort: 'MAXIMUM_TRADED',
