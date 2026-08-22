@@ -395,9 +395,16 @@ function render(){
     (!query || (m.question + " " + m.category).toLowerCase().includes(query))
   );
   if (activeCat === "all") filtered = interleaveByCategory(filtered);
-  // A premiership race reads as a leaderboard, so order it by price and show
-  // the whole field rather than truncating mid-ladder.
-  if (activeCat === "futures") filtered.sort((a, b) => b.probability - a.probability);
+  if (activeCat === "futures") {
+    // A premiership race reads as a leaderboard, so order it by price and show
+    // the whole field rather than truncating mid-ladder.
+    filtered.sort((a, b) => b.probability - a.probability);
+  } else {
+    // Upcoming games first, season-long futures underneath. A match this
+    // weekend is news, a premiership price is background. Both filters keep
+    // their existing relative order, so this only moves the futures down.
+    filtered = filtered.filter(m => !isFutures(m)).concat(filtered.filter(isFutures));
+  }
   if (!query && activeCat !== "futures") filtered = filtered.slice(0, 16);
   filtered.forEach(m => {
     const pct = Math.round(m.probability * 100);
