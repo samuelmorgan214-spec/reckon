@@ -47,6 +47,12 @@ The previous identity was blue `#2E6BFF` on near-black navy `#0A0E1A` with
 Inter throughout and no full stop. If you find those values anywhere, they are
 leftovers.
 
+## Making content
+`docs/content.md` has the brand and content guide: the two social accounts and
+what each one covers, the carousel structure, voice rules, and the compliance
+lines that are not style preferences. Read it before writing a post or a
+caption.
+
 ## Where it lives
 - **GitHub**: https://github.com/samuelmorgan214-spec/reckon (branch `main`)
 - **Hosting**: Vercel, auto-deploys on push to `main`
