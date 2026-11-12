@@ -78,6 +78,8 @@ button:disabled{opacity:.55;cursor:default}
 .msg{display:none;margin-top:14px;font-size:15px;color:var(--up)}
 .msg.err{color:var(--down)}
 .fineprint{margin-top:14px;font-size:13px;color:var(--muted)}
+.hero-form{max-width:520px}
+.hero .msg{margin-top:12px}
 
 footer{padding:40px 0 56px;color:var(--muted);font-size:13px}
 footer p{margin-bottom:10px;max-width:760px}
@@ -104,6 +106,13 @@ footer strong{color:var(--cream)}
     <h1>The outcomes that <em>impact your life</em>.</h1>
     <p>The news and pundits say one thing. The markets say another.</p>
     <p class="sub">Reckon tracks what people with actual skin in the game believe about the questions Australians argue about, priced live and updated around the clock. Not polls. Not opinion. What happens next, and what it means for you.</p>
+
+    <form class="subForm hero-form" data-id="top">
+      <input type="email" class="subEmail" placeholder="you@example.com" autocomplete="email" aria-label="Your email address" required>
+      <button type="submit" class="subBtn">Get early access</button>
+    </form>
+    <p class="msg"></p>
+    <p class="fineprint">The board is in private testing. One email when it opens, no spam.</p>
   </section>
 
   <section>
@@ -158,11 +167,11 @@ footer strong{color:var(--cream)}
     <div class="signup">
       <h2>Get early access</h2>
       <p class="lead" style="margin-bottom:0">The board is in private testing. Leave your email and we will send you the key when it opens, plus the first reckoning.</p>
-      <form id="subForm">
-        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
-        <button type="submit" id="subBtn">Get early access</button>
+      <form class="subForm" data-id="bottom">
+        <input type="email" class="subEmail" placeholder="you@example.com" autocomplete="email" aria-label="Your email address" required>
+        <button type="submit" class="subBtn">Get early access</button>
       </form>
-      <p class="msg" id="msg"></p>
+      <p class="msg"></p>
       <p class="fineprint">One email when it launches. No spam, and we do not pass your address to anyone.</p>
     </div>
   </section>
@@ -176,34 +185,41 @@ footer strong{color:var(--cream)}
 </div>
 
 <script>
-document.getElementById('subForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  var email = document.getElementById('email').value.trim();
-  var btn = document.getElementById('subBtn');
-  var msg = document.getElementById('msg');
-  btn.disabled = true;
-  btn.textContent = 'Sending...';
-  msg.style.display = 'none';
-  msg.classList.remove('err');
-  try {
-    var res = await fetch('/api/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
-    });
-    var data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'failed');
-    msg.textContent = "You're in. We'll send the key the day the board opens.";
-    msg.style.display = 'block';
-    document.getElementById('subForm').reset();
-  } catch (err) {
-    msg.textContent = 'That did not go through. Give it another crack in a minute.';
-    msg.classList.add('err');
-    msg.style.display = 'block';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Get early access';
-  }
+// One handler for every signup form on the page. The hero form is the one most
+// people will use, the footer one catches anybody who read to the end.
+document.querySelectorAll('.subForm').forEach(function (form) {
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var input = form.querySelector('.subEmail');
+    var btn = form.querySelector('.subBtn');
+    var msg = form.parentNode.querySelector('.msg');
+    var email = input.value.trim();
+
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    msg.style.display = 'none';
+    msg.classList.remove('err');
+
+    try {
+      var res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'failed');
+      msg.textContent = "You're in. We'll send the key the day the board opens.";
+      msg.style.display = 'block';
+      form.reset();
+    } catch (err) {
+      msg.textContent = 'That did not go through. Give it another crack in a minute.';
+      msg.classList.add('err');
+      msg.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Get early access';
+    }
+  });
 });
 </script>
 
