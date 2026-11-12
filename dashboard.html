@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reckon — dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#123D2E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#123D2E; --surface:#164636; --surface2:#1B5140;
+  --accent:#FBF7EF; --cream:#EDE7DA; --muted:#9DB3A6;
+  --up:#8FE0B4; --down:#E8947B; --line:#1F5744; --on-accent:#123D2E;
+  color-scheme: dark;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+header{padding:24px 0;display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;border-bottom:1px solid var(--line)}
+.logo{font-weight:800;font-size:22px;letter-spacing:-1px}
+.logo span{color:var(--muted);font-weight:500;font-size:14px;letter-spacing:0;margin-left:10px}
+.links a{color:var(--muted);font-size:13px;text-decoration:none;margin-left:16px}
+.links a:hover{color:var(--cream)}
+
+h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:26px;letter-spacing:-0.4px;margin:34px 0 14px}
+
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.tile .label{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.tile .n{font-size:38px;font-weight:700;letter-spacing:-2px;color:var(--accent);line-height:1}
+.tile .sub{font-size:12px;color:var(--muted);margin-top:8px}
+
+.banner{border-radius:12px;padding:14px 16px;font-size:14px;margin-top:16px;display:none}
+.banner.warn{display:block;background:rgba(232,148,123,.12);border:1px solid var(--down);color:var(--down)}
+.banner.ok{display:block;background:rgba(143,224,180,.10);border:1px solid var(--up);color:var(--up)}
+
+table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+th{text-align:left;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:700;padding:12px 16px;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-bottom:1px solid var(--line);font-size:14px}
+tr:last-child td{border-bottom:none}
+td.when{color:var(--muted);white-space:nowrap;text-align:right}
+
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:7px 14px;font-size:13px}
+.pill b{color:var(--accent)}
+
+.foot{color:var(--muted);font-size:12px;padding:30px 0 50px}
+.empty{color:var(--muted);padding:18px 16px;font-size:14px}
+@media (max-width:820px){ .tiles{grid-template-columns:repeat(2,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">reckon.<span>dashboard</span></div>
+    <div class="links">
+      <a href="/board">Board</a>
+      <a href="/comingsoon">Teaser</a>
+      <a href="https://supabase.com/dashboard/project/cmwtlxddrgwuhplihwkp/editor" target="_blank" rel="noopener">Supabase</a>
+    </div>
+  </header>
+
+  <h2>Signups</h2>
+  <div class="tiles">
+    <div class="tile"><div class="label">Total</div><div class="n" id="sTotal">—</div><div class="sub">all time</div></div>
+    <div class="tile"><div class="label">Today</div><div class="n" id="sDay">—</div><div class="sub">last 24 hours</div></div>
+    <div class="tile"><div class="label">This week</div><div class="n" id="sWeek">—</div><div class="sub">last 7 days</div></div>
+    <div class="tile"><div class="label">Board</div><div class="n" id="bActive">—</div><div class="sub">active markets</div></div>
+  </div>
+
+  <h2>Is the board actually live?</h2>
+  <div id="freshness" class="banner"></div>
+  <div class="pills" id="providers" style="margin-top:16px"></div>
+
+  <h2>Recent signups</h2>
+  <table>
+    <thead><tr><th>Email</th><th style="text-align:right">When</th></tr></thead>
+    <tbody id="subs"><tr><td colspan="2" class="empty">Loading…</td></tr></tbody>
+  </table>
+
+  <p class="foot" id="foot">Loading…</p>
+</div>
+
+<script>
+function ago(iso){
+  if(!iso) return 'never';
+  var mins = Math.round((Date.now() - new Date(iso).getTime())/60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return mins + ' min ago';
+  var h = Math.round(mins/60);
+  if (h < 24) return h + (h===1?' hour ago':' hours ago');
+  var d = Math.round(h/24);
+  return d + (d===1?' day ago':' days ago');
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+async function load(){
+  try{
+    var res = await fetch('/api/stats', { cache:'no-store' });
+    var d = await res.json();
+    if(!d.ok) throw new Error(d.error || 'failed');
+
+    document.getElementById('sTotal').textContent = d.subscribers.total;
+    document.getElementById('sDay').textContent   = d.subscribers.last_24h;
+    document.getElementById('sWeek').textContent  = d.subscribers.last_7d;
+    document.getElementById('bActive').textContent = d.board.active;
+
+    // The oldest price on an active market is the honest staleness measure.
+    // Ingest has silently died twice, so this is the headline, not a footnote.
+    var oldest = d.board.oldest_price;
+    var hours = oldest ? (Date.now() - new Date(oldest).getTime())/3600000 : Infinity;
+    var fresh = document.getElementById('freshness');
+    if (hours > 26) {
+      fresh.className = 'banner warn';
+      fresh.textContent = 'Stale. The oldest active market last moved ' + ago(oldest) +
+        '. Check: gh run list, and whether GitHub disabled the schedule for inactivity.';
+    } else {
+      fresh.className = 'banner ok';
+      fresh.textContent = 'Healthy. Every active market has priced within the last day. Oldest is ' + ago(oldest) + '.';
+    }
+
+    var p = document.getElementById('providers');
+    p.innerHTML = Object.keys(d.board.by_provider).sort().map(function(k){
+      return '<span class="pill">' + esc(k) + ' <b>' + d.board.by_provider[k] + '</b></span>';
+    }).join('') + '<span class="pill">inactive <b>' + d.board.inactive + '</b></span>';
+
+    var tb = document.getElementById('subs');
+    if(!d.subscribers.recent.length){
+      tb.innerHTML = '<tr><td colspan="2" class="empty">No signups yet. The teaser is live at /comingsoon.</td></tr>';
+    } else {
+      tb.innerHTML = d.subscribers.recent.map(function(s){
+        return '<tr><td>' + esc(s.email) + '</td><td class="when">' + ago(s.created_at) + '</td></tr>';
+      }).join('');
+    }
+
+    document.getElementById('foot').textContent =
+      'Updated ' + new Date(d.generated_at).toLocaleTimeString('en-AU') + '. Refreshes every 60 seconds.';
+  }catch(err){
+    document.getElementById('foot').textContent = 'Could not load stats: ' + err.message;
+  }
+}
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

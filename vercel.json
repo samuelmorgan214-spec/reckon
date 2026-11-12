@@ -5,7 +5,8 @@
   ],
   "rewrites": [
     { "source": "/comingsoon", "destination": "/landing.html" },
-    { "source": "/board", "destination": "/index.html" }
+    { "source": "/board", "destination": "/index.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" }
   ],
   "crons": [
     { "path": "/api/cron/ingest-odds", "schedule": "0 20 * * *" },
