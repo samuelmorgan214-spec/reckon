@@ -34,7 +34,9 @@ export default function middleware(request) {
   // gate: an exact list means a routing change cannot accidentally expose it,
   // and /api/prices is never public, which also keeps us clear of the Odds API
   // term about redistributing their data through an API of our own.
-  if (path === '/preview' || path === '/landing.html' || path === '/api/subscribe') return;
+  // /preview is the old path, kept open so the redirect to /comingsoon is
+  // reachable rather than answering 401 to anyone holding the earlier link.
+  if (path === '/comingsoon' || path === '/preview' || path === '/landing.html' || path === '/api/subscribe') return;
 
   const header = request.headers.get('authorization') || '';
   const [scheme, encoded] = header.split(' ');

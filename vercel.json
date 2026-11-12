@@ -1,7 +1,10 @@
 {
   "regions": ["syd1"],
+  "redirects": [
+    { "source": "/preview", "destination": "/comingsoon", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/preview", "destination": "/landing.html" }
+    { "source": "/comingsoon", "destination": "/landing.html" }
   ],
   "crons": [
     { "path": "/api/cron/ingest-odds", "schedule": "0 20 * * *" },
