@@ -28,6 +28,14 @@ export default function middleware(request) {
   // called by GitHub Actions, which cannot answer a browser prompt.
   if (path.startsWith('/api/cron/') || path.startsWith('/api/admin/')) return;
 
+  // The public pre-launch surface: the landing page and the email capture it
+  // posts to. Deliberately an explicit allowlist of exact paths, and
+  // deliberately not "/". The board lives at "/" and must stay behind the
+  // gate: an exact list means a routing change cannot accidentally expose it,
+  // and /api/prices is never public, which also keeps us clear of the Odds API
+  // term about redistributing their data through an API of our own.
+  if (path === '/preview' || path === '/landing.html' || path === '/api/subscribe') return;
+
   const header = request.headers.get('authorization') || '';
   const [scheme, encoded] = header.split(' ');
 
