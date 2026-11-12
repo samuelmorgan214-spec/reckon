@@ -10,7 +10,9 @@ Last updated: 16 August 2026.
 
 ## What Reckon is
 Australian prediction-market media brand. Tagline "what do you reckon?",
-positioning "The news and pundits say one thing. The markets say another."
+positioning "The outcomes that impact your life. Politics. Money. Markets."
+The older line, "The news and pundits say one thing, the markets say another",
+survives as supporting copy in the hero paragraph rather than the headline.
 Information product only — no bets taken, no links to gambling operators,
 helpline footer on every page.
 
@@ -19,10 +21,27 @@ from real traded markets. Anything that is Reckon's own judgement is labelled
 "Reckon estimate, no market priced" and rendered in amber so it can never be
 mistaken for a traded price. Poll-derived numbers were explicitly removed.
 
-Brand: blue `#2E6BFF` accent, near-black navy `#0A0E1A` background, Inter
-throughout, light/dark toggle (defaults dark, persists in localStorage).
+Brand, rebranded 13 November 2026 from the brand artwork: forest green
+`#123D2E` ground, cream `#EDE7DA` text, **two colours only**. The accent is a
+brighter cream `#FBF7EF` rather than a third hue, so prices and fills read as
+emphasis without adding colour. Up and down moves are the deliberate
+exception, a soft mint and a warm terracotta, because a move has to be legible
+and pure green cannot be on a green ground.
+
+Type is Playfair Display for headlines and Inter for everything else. Labels,
+data and body stay sans: that contrast is what the artwork runs on, so do not
+set card questions or prices in the serif.
+
+Light/dark toggle persists in localStorage, and light mode inverts to a cream
+ground with green text rather than going white.
+
 Copy voice: plain confident Australian, **no em dashes, no semicolons**.
-Logo is the bare lowercase "reckon" wordmark.
+Logo is the lowercase wordmark **with the full stop**, "reckon.", set in heavy
+Inter and in cream, not in the accent.
+
+The previous identity was blue `#2E6BFF` on near-black navy `#0A0E1A` with
+Inter throughout and no full stop. If you find those values anywhere, they are
+leftovers.
 
 ## Where it lives
 - **GitHub**: https://github.com/samuelmorgan214-spec/reckon (branch `main`)

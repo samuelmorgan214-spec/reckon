@@ -3,37 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reckon — what the markets say</title>
-<meta name="description" content="Reckon tracks what betting and prediction markets imply about the questions Australians argue about. Footy, politics, the economy.">
+<title>Reckon — the outcomes that impact your life</title>
+<meta name="description" content="Politics, money and markets. Reckon tracks what prediction and betting markets imply about the outcomes that reach your front door. A different perspective, a clearer view.">
+<meta name="theme-color" content="#123D2E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
+/* Forest green and cream, taken from the brand artwork. The accent is a
+   brighter cream rather than a separate hue: the identity is deliberately two
+   colours, so prices and fills read as emphasis without introducing a third.
+   Up and down are the one exception, because a market move has to be legible
+   at a glance, and pure green cannot do that on a green ground. */
 :root, [data-theme="dark"]{
-  --forest:#0A0E1A;
-  --surface:#10141F;
-  --surface2:#1A2035;
-  --mint:#2E6BFF;
-  --mint-dim:#1E3A8A;
-  --cream:#F1F5F9;
-  --muted:#8B93A7;
-  --up:#3DFFA2;
-  --down:#EF4444;
-  --line:#202A42;
-  --on-accent:#FFFFFF;
+  --forest:#123D2E;
+  --surface:#164636;
+  --surface2:#1B5140;
+  --mint:#FBF7EF;
+  --mint-dim:#8FA99B;
+  --cream:#EDE7DA;
+  --muted:#9DB3A6;
+  --up:#8FE0B4;
+  --down:#E8947B;
+  --line:#1F5744;
+  --on-accent:#123D2E;
   color-scheme: dark;
 }
 [data-theme="light"]{
-  --forest:#FFFFFF;
-  --surface:#FFFFFF;
-  --surface2:#F1F5F9;
-  --mint:#2E6BFF;
-  --mint-dim:#1D4ED8;
-  --cream:#0F172A;
-  --muted:#64748B;
-  --up:#16A34A;
-  --down:#DC2626;
-  --line:#E2E8F0;
-  --on-accent:#FFFFFF;
+  --forest:#F6F1E7;
+  --surface:#FFFCF6;
+  --surface2:#EDE6D8;
+  --mint:#123D2E;
+  --mint-dim:#3E6B58;
+  --cream:#123D2E;
+  --muted:#5C7466;
+  --up:#1F7A4D;
+  --down:#B5462A;
+  --line:#DCD2C0;
+  --on-accent:#F6F1E7;
   color-scheme: light;
 }
 *{margin:0;padding:0;box-sizing:border-box}
@@ -42,7 +48,7 @@ body{background:var(--forest);color:var(--cream);font-family:'Inter',sans-serif;
 
 header{padding:22px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand-group{display:flex;align-items:baseline;gap:14px}
-.logo{display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.5px;color:var(--mint)}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-weight:800;font-size:26px;letter-spacing:-1px;color:var(--cream)}
 .logo svg{display:block}
 .tagline{font-size:13px;color:var(--muted);letter-spacing:0.04em}
 .head-right{display:flex;align-items:center;gap:14px}
@@ -66,7 +72,9 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 @media (prefers-reduced-motion: reduce){.ticker-inner{animation:none}}
 
 .hero{padding:56px 0 34px}
-.hero h1{font-family:'Inter',sans-serif;font-weight:700;font-size:clamp(34px,5.5vw,58px);line-height:1.04;letter-spacing:-1.5px;max-width:720px}
+/* Display serif for headlines only. Labels, data and body stay sans, which is
+   the contrast the artwork runs on. */
+.hero h1{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(38px,6vw,66px);line-height:1.02;letter-spacing:-1px;max-width:760px}
 .hero h1 em{font-style:normal;color:var(--mint)}
 .hero p{margin-top:16px;color:var(--muted);font-size:16px;max-width:560px;line-height:1.6}
 
@@ -125,7 +133,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 .f2-nav button{width:26px;height:26px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;transition:all .15s}
 .f2-nav button:hover{border-color:var(--mint-dim);color:var(--cream)}
 .f2-nav button:focus-visible{outline:2px solid var(--mint);outline-offset:2px}
-.f2-title{font-family:'Inter',sans-serif;font-weight:700;font-size:26px;letter-spacing:-0.6px;margin-bottom:22px}
+.f2-title{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:30px;letter-spacing:-0.6px;margin-bottom:22px}
 .f2-body{display:grid;grid-template-columns:1fr 1.3fr;gap:32px}
 @media(max-width:800px){.f2-body{grid-template-columns:1fr}}
 .f2-thead{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);letter-spacing:0.05em;text-transform:uppercase;padding-bottom:8px;border-bottom:1px solid var(--line)}
@@ -146,7 +154,7 @@ header{padding:22px 0;display:flex;align-items:center;justify-content:space-betw
 @media(max-width:600px){.f2-title{font-size:21px}}
 
 .signup{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:28px;margin:10px 0 60px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.signup h2{font-family:'Inter',sans-serif;font-size:22px;letter-spacing:-0.5px}
+.signup h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:26px;letter-spacing:-0.5px}
 .signup p{color:var(--muted);font-size:14px;margin-top:6px;line-height:1.5;max-width:440px}
 .signup form{display:flex;gap:10px;flex-wrap:wrap}
 .signup input{background:var(--surface2);border:1px solid var(--line);border-radius:99px;color:var(--cream);font-family:'Inter',sans-serif;font-size:16px;padding:12px 18px;min-width:240px}
@@ -185,8 +193,8 @@ footer a{color:var(--mint-dim)}
 <div class="wrap">
 <header>
   <div class="brand-group">
-    <div class="logo">reckon</div>
-    <div class="tagline">what do you reckon?</div>
+    <div class="logo">reckon.</div>
+    <div class="tagline">a different perspective. a clearer view.</div>
   </div>
   <div class="head-right">
     <input class="search" id="searchBox" type="search" placeholder="Search" aria-label="Search markets">
@@ -202,8 +210,8 @@ footer a{color:var(--mint-dim)}
 
 <div class="wrap">
 <section class="hero">
-  <h1>The news and pundits say one thing.<br>The <em>markets</em> say another.</h1>
-  <p>Reckon tracks what people with skin in the game believe about the questions Australians actually argue about. Not polls, not pundits. The price of being right, updated from live markets.</p>
+  <h1>The outcomes that <em>impact your life</em>.</h1>
+  <p>Politics. Money. Markets. The news and pundits say one thing, the markets say another. Reckon tracks what people with skin in the game actually believe, priced live, so you can see what happens next and what it means for you.</p>
 </section>
 
 <div class="note" id="demoNote"><b>Demo prices.</b> The live feed could not be reached, so the board is showing illustrative placeholder prices. Refresh in a minute.</div>
