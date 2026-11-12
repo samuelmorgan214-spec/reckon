@@ -41,7 +41,7 @@ clearance above stops applying. Keep it undocumented and treat any request to
 open it up as a terms question first, an engineering question second.
 
 They also ask that anything promoting bookmakers carries responsible gambling
-messaging. Reckon already runs the helpline footer on every page, so this is
+messaging. Reckon runs the helpline footer on every page that shows prices, so this is
 satisfied, and Reckon does not promote operators at all.
 
 Attribution wording is not prescribed. The current `contributing_books` display
@@ -113,7 +113,7 @@ Current attribution string: "ASX 30 Day Interbank Cash Rate Futures, implied".
 ## Compliance posture (standing)
 
 - No links to gambling operators anywhere on the product. No affiliate parameters. No wagering sign-up CTAs.
-- Footer disclaimer + National Gambling Helpline 1800 858 858 on every page.
+- Footer disclaimer + National Gambling Helpline 1800 858 858 on every page that shows prices. The `/preview` teaser is the one exception, since it shows none. See HANDOFF.md.
 - Nothing that constitutes providing or advertising a gambling service under the Interactive Gambling Act. When in doubt, present less, attribute more.
 - Accuracy claims must be provable from the prices_history / resolutions tables. No claimed track record the database cannot back.
 - Every price carries its source and timestamp on the card. This is an editorial rule and it is also the thing that makes attribution automatic rather than something to remember.

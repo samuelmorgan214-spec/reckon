@@ -14,7 +14,11 @@ positioning "The outcomes that impact your life. Politics. Money. Markets."
 The older line, "The news and pundits say one thing, the markets say another",
 survives as supporting copy in the hero paragraph rather than the headline.
 Information product only — no bets taken, no links to gambling operators,
-helpline footer on every page.
+helpline footer on every page that shows prices. The public teaser at
+`/preview` is the one exception, decided 13 November 2026: it displays no
+prices and no wagering content, and leading with a gambling disclaimer told
+visitors Reckon was a betting product before they knew what it was. **If that
+page ever shows a price, the footer goes back on.**
 
 **Editorial rule, decided this session: markets only, never polls.** Prices come
 from real traded markets. Anything that is Reckon's own judgement is labelled
