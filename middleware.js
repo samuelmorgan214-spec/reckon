@@ -13,13 +13,25 @@
 export const config = { runtime: 'edge' };
 
 export default function middleware(request) {
+  const url = new URL(request.url);
+
+  // Pre-launch: the root is the public teaser and the board lives at /board.
+  // Done here rather than as a vercel.json redirect so it is unconditional:
+  // it runs before the gate check, so a missing SITE_USER cannot leave the
+  // board sitting on the front door, and it does not depend on whether
+  // redirects are evaluated before or after middleware.
+  // Flip this to serve the board when the board itself goes public.
+  if (url.pathname === '/' || url.pathname === '/index.html') {
+    return Response.redirect(new URL('/comingsoon', url), 307);
+  }
+
   const user = process.env.SITE_USER;
   const pass = process.env.SITE_PASS;
 
   // Not configured yet: stay open rather than risk locking the site out.
   if (!user || !pass) return;
 
-  const path = new URL(request.url).pathname;
+  const path = url.pathname;
 
   // Vercel internals.
   if (path.startsWith('/_vercel')) return;
@@ -36,7 +48,8 @@ export default function middleware(request) {
   // term about redistributing their data through an API of our own.
   // /preview is the old path, kept open so the redirect to /comingsoon is
   // reachable rather than answering 401 to anyone holding the earlier link.
-  if (path === '/comingsoon' || path === '/preview' || path === '/landing.html' || path === '/api/subscribe') return;
+  if (path === '/comingsoon' || path === '/preview' || path === '/landing.html' ||
+      path === '/api/subscribe' || path === '/reckon_avatar_square_320.png') return;
 
   const header = request.headers.get('authorization') || '';
   const [scheme, encoded] = header.split(' ');
