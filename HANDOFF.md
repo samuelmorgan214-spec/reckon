@@ -298,6 +298,12 @@ GitHub Actions secret, then redeploying.
 > fix. Delete them anyway.
 
 ## Gotchas that cost time this session
+- **Vercel Hobby allows 12 Serverless Functions and the project sits at the
+  cap.** Adding a thirteenth file under `api/` makes the deploy fail, and the
+  symptom is confusing: the push succeeds, the commit is live on GitHub, and
+  the new endpoint simply 404s while everything else keeps serving the previous
+  build. Count with `find api -name '*.js' | wc -l` before adding one, and
+  delete a temporary probe to make room.
 - **A silently failing cron looks exactly like a working one.** Four weeks of
   red runs went unnoticed. `gh run list` is the two-second check.
 - **curl exit code 3 means "URL malformed", not "auth failed".** In a workflow

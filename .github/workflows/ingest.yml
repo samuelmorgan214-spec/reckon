@@ -42,16 +42,6 @@ jobs:
         run: |
           curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             "${{ secrets.SITE_URL }}/api/cron/sports-probe"
-      # TEMPORARY, remove with api/cron/betfair-probe.js once markets are seeded.
-      - name: Probe Betfair lookup
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "${{ secrets.SITE_URL }}/api/cron/betfair-probe?shape=1"
-          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "${{ secrets.SITE_URL }}/api/cron/betfair-probe?q=&eventTypeIds=1477"
-          curl -fsS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            "${{ secrets.SITE_URL }}/api/cron/betfair-probe?q=&eventTypeIds=2378961"
       - name: Ingest Betfair outrights
         if: github.event.schedule == '15 6,20 * * *' || github.event_name == 'workflow_dispatch'
         run: |
