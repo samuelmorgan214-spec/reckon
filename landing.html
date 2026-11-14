@@ -68,6 +68,28 @@ button:disabled{opacity:.55;cursor:default}
 .theme .yours{font-weight:600;font-size:16px;margin-bottom:8px}
 .theme p{color:var(--muted);font-size:15px}
 
+/* Decorative market motifs. These are shapes, not data: live prices cannot go
+   on a public page while the Kalshi terms forbid display and the Betfair
+   display terms are unreviewed, and an unlabelled invented number would break
+   the editorial rule besides. They are drawn on once and then sit still. */
+.spark{display:block;width:100%;height:54px;margin-top:20px;overflow:visible}
+.spark path{fill:none;stroke:var(--accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
+.spark path.band{stroke:none;fill:var(--accent);opacity:.07}
+.spark .draw{stroke-dasharray:420;stroke-dashoffset:420;animation:draw 1.9s ease-out forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.spark .draw{animation:none;stroke-dashoffset:0}}
+
+.heroart{position:relative;margin-top:44px;border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:22px 22px 14px;overflow:hidden}
+.heroart svg{display:block;width:100%;height:160px;overflow:visible}
+.heroart .grid line{stroke:var(--line);stroke-width:1}
+.heroart .line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.heroart .a{stroke:var(--accent);stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 2.4s ease-out forwards}
+.heroart .b{stroke:var(--muted);opacity:.55;stroke-dasharray:1200;stroke-dashoffset:1200;animation:draw 2.4s .35s ease-out forwards}
+.heroart .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--muted)}
+.heroart .legend i{display:inline-block;width:9px;height:9px;border-radius:99px;margin-right:7px;vertical-align:middle}
+.illus-note{margin-top:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);opacity:.8}
+@media (prefers-reduced-motion:reduce){.heroart .a,.heroart .b{animation:none;stroke-dashoffset:0}}
+
 .closing{border-top:1px solid var(--line);padding:56px 0 90px}
 .closing h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(28px,4.5vw,44px);line-height:1.05;letter-spacing:-0.8px;max-width:620px}
 .closing p.sub{margin-top:14px;color:var(--muted);max-width:560px}
@@ -99,6 +121,23 @@ button:disabled{opacity:.55;cursor:default}
     </form>
     <p class="msg"></p>
     <p class="fineprint">Be first in when it opens. One email, no spam, and your address goes nowhere else.</p>
+
+    <div class="heroart">
+      <svg viewBox="0 0 600 160" preserveAspectRatio="none" role="img" aria-label="Two lines diverging, the markets moving before the commentary does">
+        <g class="grid">
+          <line x1="0" y1="40" x2="600" y2="40"></line>
+          <line x1="0" y1="80" x2="600" y2="80"></line>
+          <line x1="0" y1="120" x2="600" y2="120"></line>
+        </g>
+        <path class="line b" d="M0,96 C70,94 110,99 160,95 C220,90 260,96 320,92 C380,88 430,94 490,90 C540,87 570,91 600,88"></path>
+        <path class="line a" d="M0,104 C70,100 110,88 160,92 C220,96 250,62 320,54 C380,47 420,70 470,44 C520,20 560,30 600,18"></path>
+      </svg>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>What the markets price</span>
+        <span><i style="background:var(--muted)"></i>What the commentary says</span>
+      </div>
+      <div class="illus-note">Illustrative</div>
+    </div>
   </section>
 
   <div class="themes">
@@ -107,24 +146,28 @@ button:disabled{opacity:.55;cursor:default}
       <h2>What will they do next?</h2>
       <p class="yours">Trade. Tax. Housing. The cost of living.</p>
       <p>Decisions in Washington and Canberra. Outcomes that reach your front door. We look beyond the announcement to the outcome.</p>
+      <svg class="spark" viewBox="0 0 275 54" preserveAspectRatio="none" aria-hidden="true"><path class="draw" d="M0,40 C30,38 55,30 85,33 C120,36 140,20 175,16 C210,12 240,24 275,10"></path></svg>
     </div>
     <div class="theme">
       <div class="label">Interest rates</div>
       <h2>Where do rates go?</h2>
       <p class="yours">Your mortgage. Your savings. Your next move.</p>
       <p>A rate decision is never just a number. We unpack the possibilities and what they mean for you.</p>
+      <svg class="spark" viewBox="0 0 275 54" preserveAspectRatio="none" aria-hidden="true"><path class="draw" d="M0,12 C32,14 58,13 88,20 C120,27 142,26 172,34 C205,42 240,40 275,44"></path></svg>
     </div>
     <div class="theme">
       <div class="label">Stock market</div>
       <h2>What&rsquo;s next for the market?</h2>
       <p class="yours">Your shares. Your super. Your future.</p>
       <p>What could drive the next rise, or the next fall, before it shows up in the headlines.</p>
+      <svg class="spark" viewBox="0 0 275 54" preserveAspectRatio="none" aria-hidden="true"><path class="draw" d="M0,34 C28,30 48,40 78,26 C108,12 128,30 158,20 C190,9 230,28 275,8"></path></svg>
     </div>
     <div class="theme">
       <div class="label">Sport</div>
       <h2>Who actually wins it?</h2>
       <p class="yours">The flag. The premiership. The title.</p>
       <p>Not the tipping panel, not the talkback caller. What the money says about your team, week to week.</p>
+      <svg class="spark" viewBox="0 0 275 54" preserveAspectRatio="none" aria-hidden="true"><path class="draw" d="M0,26 C30,10 52,38 82,22 C112,7 132,36 165,24 C198,12 238,32 275,18"></path></svg>
     </div>
   </div>
 
