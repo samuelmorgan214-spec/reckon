@@ -89,17 +89,37 @@ button:disabled{opacity:.55;cursor:default}
 .ex-src{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-size:11px;color:var(--muted)}
 .ex-src .tag{letter-spacing:0.1em;text-transform:uppercase;opacity:.75}
 
-.heroart{position:relative;margin-top:44px;border:1px solid var(--line);border-radius:16px;background:var(--surface);padding:22px 22px 14px;overflow:hidden}
-.heroart svg{display:block;width:100%;height:160px;overflow:visible}
-.heroart .grid line{stroke:var(--line);stroke-width:1}
-.heroart .line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-@keyframes draw{from{stroke-dashoffset:1200}to{stroke-dashoffset:0}}
-.heroart .a{stroke:var(--accent);stroke-dasharray:1200;animation:draw 2.4s ease-out both}
-.heroart .b{stroke:var(--muted);opacity:.55;stroke-dasharray:1200;animation:draw 2.4s .35s ease-out both}
-.heroart .legend{display:flex;gap:20px;flex-wrap:wrap;margin-top:14px;font-size:12px;color:var(--muted)}
-.heroart .legend i{display:inline-block;width:9px;height:9px;border-radius:99px;margin-right:7px;vertical-align:middle}
+/* A replica of the board's featured carousel card, so the first thing on the
+   page is the product itself. Series colours are copied verbatim from
+   index.html, where the carousel hardcodes them. */
+.fcard{margin-top:40px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px}
+.fcard-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.fcard-badge{display:flex;align-items:center;gap:8px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.fcard-badge .dot{width:8px;height:8px;border-radius:99px;background:#2E6BFF;box-shadow:0 0 8px #2E6BFF}
+.fcard-nav{font-size:12px;color:var(--muted)}
+.fcard h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(22px,3vw,30px);letter-spacing:-0.5px;line-height:1.1;margin-bottom:20px;color:var(--cream)}
+.fcard-body{display:grid;grid-template-columns:1fr 1.25fr;gap:30px}
+.fcard-thead,.fcard-row{display:flex;justify-content:space-between;align-items:center}
+.fcard-thead{font-size:11px;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--line)}
+.fcard-row{padding:13px 0;border-bottom:1px solid var(--line)}
+.fcard-name{font-size:15px;position:relative;padding-bottom:3px;color:var(--cream)}
+.fcard-name::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:2px;background:var(--row-color)}
+.fcard-pay{font-size:13px;color:var(--muted)}
+.fcard-odds{font-weight:700;font-size:14px;border:1px solid var(--row-color);color:var(--row-color);border-radius:99px;padding:5px 14px}
+.fcard-meta{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);padding:12px 0}
+.fcard-news{font-size:13px;color:var(--muted);line-height:1.6;padding-top:10px;border-top:1px solid var(--line)}
+.fcard-chart{display:flex;flex-direction:column}
+.fcard-key{font-size:13px;color:var(--cream);margin-bottom:8px}
+.fcard-key i{display:inline-block;width:8px;height:8px;border-radius:99px;background:#2E6BFF;margin-right:7px}
+.fcard-key b{font-weight:700}
+.fcard svg{width:100%;height:190px;overflow:visible}
+.fcard .grid line{stroke:var(--line);stroke-width:1}
+.fcard .axis{font-size:9px;fill:var(--muted)}
+.fcard .series{fill:none;stroke:#2E6BFF;stroke-width:2;stroke-linecap:round;stroke-dasharray:900;animation:draw 2s ease-out both}
+@keyframes draw{from{stroke-dashoffset:900}to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.fcard .series{animation:none}}
+@media(max-width:800px){.fcard-body{grid-template-columns:1fr}}
 .illus-note{margin-top:10px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);opacity:.8}
-@media (prefers-reduced-motion:reduce){.heroart .a,.heroart .b{animation:none}}
 
 .closing{border-top:1px solid var(--line);padding:56px 0 90px}
 .closing h2{font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:clamp(28px,4.5vw,44px);line-height:1.05;letter-spacing:-0.8px;max-width:620px}
@@ -133,21 +153,39 @@ button:disabled{opacity:.55;cursor:default}
     <p class="msg"></p>
     <p class="fineprint">Be first in when it opens. One email, no spam, and your address goes nowhere else.</p>
 
-    <div class="heroart">
-      <svg viewBox="0 0 600 160" preserveAspectRatio="none" role="img" aria-label="Two lines diverging, the markets moving before the commentary does">
-        <g class="grid">
-          <line x1="0" y1="40" x2="600" y2="40"></line>
-          <line x1="0" y1="80" x2="600" y2="80"></line>
-          <line x1="0" y1="120" x2="600" y2="120"></line>
-        </g>
-        <path class="line b" d="M0,96 C70,94 110,99 160,95 C220,90 260,96 320,92 C380,88 430,94 490,90 C540,87 570,91 600,88"></path>
-        <path class="line a" d="M0,104 C70,100 110,88 160,92 C220,96 250,62 320,54 C380,47 420,70 470,44 C520,20 560,30 600,18"></path>
-      </svg>
-      <div class="legend">
-        <span><i style="background:var(--accent)"></i>What the markets price</span>
-        <span><i style="background:var(--muted)"></i>What the commentary says</span>
+    <div class="fcard">
+      <div class="fcard-top">
+        <div class="fcard-badge"><span class="dot"></span>Politics</div>
+        <div class="fcard-nav">1 of 5</div>
       </div>
-      <div class="illus-note">Illustrative</div>
+      <h3>Coalition to win the 2026 Victorian state election</h3>
+      <div class="fcard-body">
+        <div>
+          <div class="fcard-thead"><span>Market</span><span>Pays out</span><span>Odds</span></div>
+          <div class="fcard-row" style="--row-color:#2E6BFF">
+            <span class="fcard-name">Yes</span><span class="fcard-pay">1.39x</span><span class="fcard-odds">72%</span>
+          </div>
+          <div class="fcard-row" style="--row-color:#3DFFA2">
+            <span class="fcard-name">No</span><span class="fcard-pay">3.57x</span><span class="fcard-odds">28%</span>
+          </div>
+          <div class="fcard-meta"><span>Betfair Exchange, delayed</span><span>6 more in Politics</span></div>
+          <div class="fcard-news">Steady over the past week. Every price on the board carries its source and the time it last moved.</div>
+        </div>
+        <div class="fcard-chart">
+          <div class="fcard-key"><i></i>Yes <b>72%</b></div>
+          <svg viewBox="0 0 320 170" preserveAspectRatio="none" role="img" aria-label="Example price history, holding around 72 per cent">
+            <g class="grid">
+              <line x1="0" y1="6" x2="320" y2="6"></line>
+              <line x1="0" y1="47" x2="320" y2="47"></line>
+              <line x1="0" y1="88" x2="320" y2="88"></line>
+              <line x1="0" y1="129" x2="320" y2="129"></line>
+              <line x1="0" y1="164" x2="320" y2="164"></line>
+            </g>
+            <path class="series" d="M0,58 C34,56 52,62 80,57 C112,51 134,54 162,50 C196,45 214,52 246,47 C278,42 300,46 320,44"></path>
+          </svg>
+          <div class="fcard-meta"><span>Last 7 days</span><span class="tag" style="letter-spacing:.1em;text-transform:uppercase;opacity:.8">Illustrative</span></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -159,9 +197,9 @@ button:disabled{opacity:.55;cursor:default}
       <p>Decisions in Washington and Canberra. Outcomes that reach your front door. We look beyond the announcement to the outcome.</p>
       <div class="ex">
         <div class="ex-top"><span class="ex-cat">politics</span><span class="ex-move up">&#9650; +6 pts</span></div>
-        <div class="ex-q">Coalition to win the Victorian state election</div>
-        <div class="ex-price"><span class="ex-pct">72%</span><span class="ex-label">chance</span></div>
-        <div class="ex-track"><div class="ex-fill" style="--w:72%"></div></div>
+        <div class="ex-q">Labor to win the next federal election</div>
+        <div class="ex-price"><span class="ex-pct">44%</span><span class="ex-label">chance</span></div>
+        <div class="ex-track"><div class="ex-fill" style="--w:44%"></div></div>
         <div class="ex-src"><span>Betfair Exchange, delayed</span><span class="tag">Illustrative</span></div>
       </div>
     </div>
