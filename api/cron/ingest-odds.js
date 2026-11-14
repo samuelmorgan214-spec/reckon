@@ -10,9 +10,18 @@ import { consensus } from '../../lib/devig.js';
 //      carries them. Missing sport keys are skipped quietly.
 // Auth: Authorization: Bearer <CRON_SECRET> (Vercel cron sends this automatically).
 
+// Year-round list. An out-of-season key 404s and is skipped quietly, so the
+// board follows the calendar by itself instead of needing a seasonal edit.
+// Each key costs one Odds API credit per run, so adding to this list and
+// widening the cron in .github/workflows/ingest.yml go together.
 const MATCH_SPORTS = [
+  // Winter codes.
   { key: 'aussierules_afl', label: 'AFL', category: 'afl' },
   { key: 'rugbyleague_nrl', label: 'NRL', category: 'nrl' },
+  // Australian summer. Confirmed active in the Odds API catalogue 14 Nov 2026.
+  { key: 'cricket_big_bash', label: 'Big Bash', category: 'sports' },
+  { key: 'cricket_test_match', label: 'Test cricket', category: 'sports' },
+  { key: 'soccer_australia_aleague', label: 'A-League', category: 'sports' },
 ];
 const REGION = 'au';
 const MAX_EVENTS_PER_SPORT = 10;

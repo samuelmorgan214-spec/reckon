@@ -2,15 +2,20 @@
 # daily crons in vercel.json are a backup and this workflow does the real cadence.
 #
 # Quota budget (The Odds API free tier, 500 credits/month):
-#   ingest-odds costs ~2-4 credits per run (2 match sports + any active outright sports).
-#   Every 3 hours = 8 runs/day ~= 480-640 credits/month. If it creeps over,
-#   widen the cron or upgrade the Odds API tier (cheap).
+#   ingest-odds costs about one credit per active match sport per run, plus any
+#   active outright sports. Five match sports are listed, of which roughly
+#   three are in season at once, so budget 5-6 credits a run.
+#   Every 6 hours = 4 runs/day ~= 600-700 credits/month against a 500 free
+#   tier, so the Vercel daily cron carries the rest of the month if it runs
+#   dry. Widened from 3 hours to 6 on 14 Nov 2026 when the summer sports were
+#   added. Check the remaining balance in any run log before adding another
+#   sport.
 #
 # Repo secrets required: SITE_URL (e.g. https://reckon.vercel.app), CRON_SECRET.
 name: ingest
 on:
   schedule:
-    - cron: "0 */3 * * *"   # odds: every 3 hours
+    - cron: "0 */6 * * *"   # odds: every 6 hours
     - cron: "15 6,20 * * *" # rba: twice daily (16:15 / 06:15 AEST)
   workflow_dispatch: {}
 
