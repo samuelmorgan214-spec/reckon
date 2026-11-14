@@ -640,11 +640,22 @@ function sourceLine(m){
   return m.source_label + (m.contributing_books ? ", " + m.contributing_books + " books" : "");
 }
 
+// One market can be pinned to the front when it is the story rather than the
+// biggest mover. A market seeded this week has no seven-day move at all, so
+// ranking alone would bury it however striking the number is. Set to null to
+// go back to pure movers. The slug must exist and be active, otherwise this
+// quietly does nothing and the carousel fills normally.
+const PINNED_SLUG = 'vic-election-2026-coalition';
+
 // Biggest movers first, which is the honest answer to "what should I look at".
 // Ties and flat weeks still fill the carousel, they just sit at the back.
 function buildFeatured(all){
-  return all.slice()
-    .sort((a, b) => Math.abs(b.move) - Math.abs(a.move))
+  const pinned = PINNED_SLUG ? all.filter(m => m.slug === PINNED_SLUG) : [];
+  const rest = all
+    .filter(m => !pinned.length || m.slug !== PINNED_SLUG)
+    .sort((a, b) => Math.abs(b.move) - Math.abs(a.move));
+
+  return pinned.concat(rest)
     .slice(0, FEATURED_COUNT)
     .map(m => {
       const pct = Math.round(m.probability * 100);
