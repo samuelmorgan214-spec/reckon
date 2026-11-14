@@ -14,17 +14,6 @@ export const config = { runtime: 'edge' };
 
 export default function middleware(request) {
   const url = new URL(request.url);
-
-  // Pre-launch: the root is the public teaser and the board lives at /board.
-  // Done here rather than as a vercel.json redirect so it is unconditional:
-  // it runs before the gate check, so a missing SITE_USER cannot leave the
-  // board sitting on the front door, and it does not depend on whether
-  // redirects are evaluated before or after middleware.
-  // Flip this to serve the board when the board itself goes public.
-  if (url.pathname === '/' || url.pathname === '/index.html') {
-    return Response.redirect(new URL('/comingsoon', url), 307);
-  }
-
   const user = process.env.SITE_USER;
   const pass = process.env.SITE_PASS;
 
