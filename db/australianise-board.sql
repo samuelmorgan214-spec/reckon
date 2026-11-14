@@ -59,26 +59,29 @@ insert into markets (slug, question, category, source_type, source_config) value
    '{"provider":"betfair","marketId":"1.240828208","runner":"Coalition"}')
 on conflict (slug) do nothing;
 
-commit;
 
 -- ---------------------------------------------------------------------------
--- 3. Optional: thin out the American half of the board
+-- 3. One crypto market, not ten
 -- ---------------------------------------------------------------------------
--- NOT run above, because it is an editorial call rather than a correction.
+-- Ten crypto markets against a handful of Australian ones does not read as
+-- Australian prediction-market media, it reads as a crypto site. One keeps the
+-- category present as context without it dominating the board.
 --
--- Two reasons to consider it. The board currently carries ten crypto markets
--- and two US politics markets against a handful of Australian ones, which is
--- not what "Australian prediction-market media" looks like. And every one of
--- those is a Kalshi price, which docs/source-terms.md says cannot be displayed
--- publicly until written permission arrives. They are fine behind the gate and
--- a problem the day the board opens.
+-- Kept: btc-100k-2026, the most recognisable version of the question.
+-- Retired: the other nine, including the eth ladder and the 2027 Satoshi
+-- market. All were Kalshi, all low-probability, and all settle within weeks
+-- anyway, at which point the Kalshi ingester would have retired them itself.
 --
--- Keeping a couple of the biggest crypto markets reads as context. Keeping ten
--- reads as a crypto site.
---
--- update markets set active = false
---  where source_config->>'provider' = 'kalshi'
---    and slug not in ('btc-100k-2026', 'us-president-2028-democrats');
+-- Worth knowing: the one that survives is still a Kalshi price, and
+-- docs/source-terms.md says those cannot be displayed publicly until written
+-- permission arrives. Fine behind the gate, a decision to make before launch.
+
+update markets set active = false
+ where source_config->>'provider' = 'kalshi'
+   and category = 'crypto'
+   and slug <> 'btc-100k-2026';
+
+commit;
 
 -- ---------------------------------------------------------------------------
 -- Check
